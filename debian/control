@@ -1,0 +1,14 @@
+Source: homegear-nodes-ui
+Maintainer: Dr. Sathya Laufer <s.laufer@homegear.email>
+Section: misc
+Priority: optional
+Standards-Version: 3.9.6
+Build-Depends: debhelper (>= 8), libhomegear-node
+Homepage: https://homegear.eu
+
+Package: homegear-nodes-ui
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}, libhomegear-node
+Description: UI nodes for Homegear's Node-BLUE
+ Homegear is a program to interface your home automation software 
+ with your smart home devices.

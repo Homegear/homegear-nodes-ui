@@ -1,0 +1,22 @@
+{
+  "name": "ui",
+  "description": "Node-BLUE nodes to create and work with Homegear UI elements.",
+  "keywords": [
+    "node-blue",
+    "homegear",
+    "ui",
+    "visualisation"
+  ],
+  "node-blue": {
+    "local": false,
+    "maxThreadCounts": {
+      "ui-heating": 0,
+      "ui-socket": 0
+    },
+    "nodes": {
+      "ui-heating": "ui-heating.so",
+      "ui-socket": "ui-socket.so"
+    }
+  },
+  "version": "1.0.0"
+}

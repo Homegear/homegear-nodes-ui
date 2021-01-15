@@ -1,0 +1,206 @@
+<script type="text/x-red" data-template-name="ui-heating">
+    <div class="form-row">
+        <label style="width: 130px;" for="node-input-name"><i class="fa fa-tag"></i> <span data-i18n="ui/ui-common:ui-common.label.name"></span></label>
+        <input style="width: 65%;" type="text" id="node-input-name" data-i18n="[placeholder]ui/ui-common:ui-common.label.name">
+    </div>
+    <div class="form-row">
+        <label style="width: 130px;" for="node-input-uielement"><i class="fa fa-random"></i> <span data-i18n="ui/ui-common:ui-common.label.uielement"></span></label>
+        <select type="text" id="node-input-uielement" class="node-input-select2" style="display: inline-block; width: 65%;">
+        </select>
+    </div>
+    <div class="form-row">
+        <label style="width: 130px;" for="node-input-room"><i class="fa fa-home"></i> <span data-i18n="ui/ui-common:ui-common.label.room"></span></label>
+        <select type="text" id="node-input-room" style="display: inline-block; width: 65%;">
+        </select>
+    </div>
+    <div class="form-row">
+        <label style="width: 130px;" for="node-input-label"><i class="fa fa-tag"></i> <span data-i18n="ui/ui-common:ui-common.label.label"></span></label>
+        <input style="width: 65%;" type="text" id="node-input-label" data-i18n="[placeholder]ui/ui-common:ui-common.label.label">
+    </div>
+</script>
+<script type="text/javascript">
+    RED.nodes.registerType('ui-heating', {
+        category: 'homegear ui',
+        color: "#191b1f",
+        defaults: {
+            uielement: {
+                value: "Base.socketSwitch", validate: function (v) {
+                    return v != "";
+                }
+            },
+            name: {value: ""},
+            room: {value: "", required:true},
+            label: {value: "", required:true},
+            inputs: {value: 1},
+            outputs: {value: 1},
+            inputLabels2: {value: []},
+            inputDescriptions: {value: []},
+            inputTypes: {value: []},
+            outputLabels2: {value: []},
+            outputDescriptions: {value: []},
+            outputTypes: {value: []}
+        },
+        inputs: 0,
+        inputInfo: function (i) {
+            var types = (this.inputTypes && this.inputTypes.hasOwnProperty(i) && this.inputTypes[i].split(",")) || ["any"];
+            var label = (this.inputLabels2 && this.inputLabels2[i]) || i + "";
+            var description = (this.inputDescriptions && this.inputDescriptions[i]) || "";
+
+            return {
+                types: types,
+                label: label,
+                description: description
+            }
+        },
+        outputs: 0,
+        outputInfo: function (i) {
+            var types = (this.outputTypes && this.outputTypes.hasOwnProperty(i) && this.outputTypes[i].split(",")) || ["any"];
+            var label = (this.outputLabels2 && this.outputLabels2[i]) || i + "";
+            var description = (this.outputDescriptions && this.outputDescriptions[i]) || "";
+
+            return {
+                types: types,
+                label: label,
+                description: description
+            }
+        },
+        icon: "font-awesome/fa-thermometer-half",
+        paletteLabel: "heating",
+        label: function () {
+            if (this.name) return this.name;
+            return "heating";
+        },
+        labelStyle: function () {
+            return "red-ui-flow-node-label-white";
+        },
+        oneditprepare: function () {
+            var node = this;
+
+            function updateUiElement() {
+                var uiElement = $("#node-input-uielement").val();
+                if (!uiElement) return;
+
+                //{{{ Get rooms
+                RED.comms.homegear().invoke("getStories", function (message) {
+                    var stories = message.result;
+                    RED.comms.homegear().invoke("getRooms", function (message) {
+                        var rooms = message.result;
+                        var roomsById = [];
+                        for (let i = 0; i < rooms.length; i++) {
+                            roomsById[rooms[i].ID] = rooms[i].NAME;
+                        }
+                        var data = [];
+                        for (let i = 0; i < stories.length; i++) {
+                            if (stories[i].ROOMS.length === 0) continue;
+                            let storyGroup = {
+                                text: stories[i].NAME,
+                                children: []
+                            };
+                            for (let j = 0; j < stories[i].ROOMS.length; j++) {
+                                storyGroup.children.push({
+                                    id: stories[i].ROOMS[j],
+                                    text: roomsById[stories[i].ROOMS[j]]
+                                });
+                            }
+                            data.push(storyGroup);
+                        }
+
+                        $("#node-input-room").select2({data: data});
+                        $("#node-input-room").val(node.room).trigger('change');
+
+                    }, RED.i18n.lang());
+                }, RED.i18n.lang());
+                //}}}
+
+                //{{{ Get info about currently selected UI element
+                RED.comms.homegear().invoke("getUiElementTemplate", function (message) {
+                    if (!message.hasOwnProperty("result")) return;
+
+                    node.inputs = 0;
+                    node.outputs = 0;
+                    node.inputLabels2 = [];
+                    node.inputDescriptions = [];
+                    node.inputTypes = [];
+                    node.outputLabels2 = [];
+                    node.outputDescriptions = [];
+                    node.outputTypes = [];
+
+                    if (message.result.type === "simple") {
+                        if (message.result.hasOwnProperty("variableInputs")) {
+                            node.inputs = message.result.variableInputs.length;
+                            for (let input = 0; input < message.result.variableInputs.length; input++) {
+                                let variableInput = message.result.variableInputs[input];
+                                if (variableInput.properties.hasOwnProperty("label")) node.inputLabels2[input] = variableInput.properties.label;
+                                if (variableInput.properties.hasOwnProperty("description")) node.inputDescriptions[input] = variableInput.properties.description;
+                                if (variableInput.properties.hasOwnProperty("types")) node.inputTypes[input] = variableInput.properties.types;
+                            }
+                        }
+                        if (message.result.hasOwnProperty("variableOutputs")) {
+                            node.outputs = message.result.variableOutputs.length;
+                            for (let output = 0; output < message.result.variableOutputs.length; output++) {
+                                let variableOutput = message.result.variableOutputs[output];
+                                if (variableOutput.properties.hasOwnProperty("label")) node.outputLabels2[output] = variableOutput.properties.label;
+                                if (variableOutput.properties.hasOwnProperty("description")) node.outputDescriptions[output] = variableOutput.properties.description;
+                                if (variableOutput.properties.hasOwnProperty("types")) node.outputTypes[output] = variableOutput.properties.types;
+                            }
+                        }
+                    } else {
+                        let input = 0;
+                        let output = 0;
+                        for (let control = 0; control < message.result.controls.length; control++) {
+                            if (message.result.controls[control].hasOwnProperty("variableInputs")) {
+                                node.inputs += message.result.controls[control].variableInputs.length;
+                                for (let i = 0; i < message.result.controls[control].variableInputs.length; i++, input++) {
+                                    let variableInput = message.result.controls[control].variableInputs[i];
+                                    if (variableInput.properties.hasOwnProperty("label")) node.inputLabels2[input] = variableInput.properties.label;
+                                    if (variableInput.properties.hasOwnProperty("description")) node.inputDescriptions[input] = variableInput.properties.description;
+                                    if (variableInput.properties.hasOwnProperty("types")) node.inputTypes[input] = variableInput.properties.types;
+                                }
+                            }
+                            if (message.result.controls[control].hasOwnProperty("variableOutputs")) {
+                                node.outputs += message.result.controls[control].variableOutputs.length;
+                                for (let i = 0; i < message.result.controls[control].variableOutputs.length; i++, output++) {
+                                    let variableOutput = message.result.controls[control].variableOutputs[i];
+                                    if (variableOutput.properties.hasOwnProperty("label")) node.outputLabels2[output] = variableOutput.properties.label;
+                                    if (variableOutput.properties.hasOwnProperty("description")) node.outputDescriptions[output] = variableOutput.properties.description;
+                                    if (variableOutput.properties.hasOwnProperty("types")) node.outputTypes[output] = variableOutput.properties.types;
+                                }
+                            }
+                        }
+                    }
+                }, uiElement, RED.i18n.lang());
+            }
+
+            var uiElementSelect = $("#node-input-uielement");
+            uiElementSelect.on("change", function () {
+                updateUiElement();
+            });
+            //}}}
+
+            //{{{ Fill ui elements - this needs to be done here and not in HTML so the label is loaded before initializing select2.
+            uiElementSelect.append($("<option />").val("Base.heatingIsState").text(RED._("ui/ui-heating:ui-heating.label.heatingState")));
+            uiElementSelect.append($("<option />").val("Base.heatingIsStateSliderMode").text(RED._("ui/ui-heating:ui-heating.label.heatingSliderMode")));
+            uiElementSelect.append($("<option />").val("Base.heatingIsStateSliderModeWindow").text(RED._("ui/ui-heating:ui-heating.label.heatingSliderModeWindow")));
+            uiElementSelect.append($("<option />").val("Base.heatingIsStateSliderModeWindowContact").text(RED._("ui/ui-heating:ui-heating.label.heatingSliderModeWindowContact")));
+            uiElementSelect.append($("<option />").val("Base.heatingIsStateSliderModeWindowHandle").text(RED._("ui/ui-heating:ui-heating.label.heatingSliderModeWindowHandle")));
+            uiElementSelect.val(node.uielement);
+            //}}}
+
+            //Initialize select2
+            $('.node-input-select2').select2();
+            $('.node-input-select2-nosearch').select2({minimumResultsForSearch: Infinity});
+        },
+        oneditsave: function() {
+            var node = this;
+
+            var uiElement = $("#node-input-uielement").val();
+            var room = $("#node-input-room").val();
+            var label = $("#node-input-label").val();
+
+            if (uiElement !== node.uielement || room !== node.room || label !== node.label) {
+                //Something changed
+                RED.comms.homegear().invoke('setNodeVariable', null, node.id, "recreate", true);
+            }
+        }
+    });
+</script>
