@@ -9,6 +9,9 @@
         </select>
     </div>
     <div class="form-row">
+        <div style="margin-left: 135px" id="node-uielement-description">Blupp</div>
+    </div>
+    <div class="form-row">
         <label style="width: 130px;" for="node-input-room"><i class="fa fa-home"></i> <span data-i18n="ui/ui-common:ui-common.label.room"></span></label>
         <select type="text" id="node-input-room" style="display: inline-block; width: 65%;">
         </select>
@@ -28,6 +31,7 @@
                     return v != "";
                 }
             },
+            uiElementLabel: {value: ""},
             name: {value: ""},
             room: {value: "", required:true},
             label: {value: "", required:true},
@@ -67,8 +71,7 @@
         icon: "font-awesome/fa-plug",
         paletteLabel: "socket",
         label: function () {
-            if (this.name) return this.name;
-            return "socket";
+            return this.name || this.uiElementLabel || "socket";
         },
         labelStyle: function () {
             return "red-ui-flow-node-label-white";
@@ -82,8 +85,12 @@
 
                 //{{{ Get rooms
                 RED.comms.homegear().invoke("getStories", function (message) {
+                    if (!message.hasOwnProperty("result")) return;
+
                     var stories = message.result;
                     RED.comms.homegear().invoke("getRooms", function (message) {
+                        if (!message.hasOwnProperty("result")) return;
+
                         var rooms = message.result;
                         var roomsById = [];
                         for (let i = 0; i < rooms.length; i++) {
@@ -125,6 +132,10 @@
                     node.outputDescriptions = [];
                     node.outputTypes = [];
 
+                    if (message.result.hasOwnProperty("description")) {
+                        $("#node-uielement-description").html(message.result.description);
+                    } else $("#node-uielement-description").html("");
+
                     if (message.result.type === "simple") {
                         if (message.result.hasOwnProperty("variableInputs")) {
                             node.inputs = message.result.variableInputs.length;
@@ -132,7 +143,7 @@
                                 let variableInput = message.result.variableInputs[input];
                                 if (variableInput.properties.hasOwnProperty("label")) node.inputLabels2[input] = variableInput.properties.label;
                                 if (variableInput.properties.hasOwnProperty("description")) node.inputDescriptions[input] = variableInput.properties.description;
-                                if (variableInput.properties.hasOwnProperty("types")) node.inputTypes[input] = variableInput.properties.types;
+                                if (variableInput.properties.hasOwnProperty("types")) node.inputTypes[input] = variableInput.properties.types; else node.inputTypes[input] = '';
                             }
                         }
                         if (message.result.hasOwnProperty("variableOutputs")) {
@@ -141,7 +152,7 @@
                                 let variableOutput = message.result.variableOutputs[output];
                                 if (variableOutput.properties.hasOwnProperty("label")) node.outputLabels2[output] = variableOutput.properties.label;
                                 if (variableOutput.properties.hasOwnProperty("description")) node.outputDescriptions[output] = variableOutput.properties.description;
-                                if (variableOutput.properties.hasOwnProperty("types")) node.outputTypes[output] = variableOutput.properties.types;
+                                if (variableOutput.properties.hasOwnProperty("types")) node.outputTypes[output] = variableOutput.properties.types; else node.outputTypes[output] = '';
                             }
                         }
                     } else {
@@ -154,7 +165,7 @@
                                     let variableInput = message.result.controls[control].variableInputs[i];
                                     if (variableInput.properties.hasOwnProperty("label")) node.inputLabels2[input] = variableInput.properties.label;
                                     if (variableInput.properties.hasOwnProperty("description")) node.inputDescriptions[input] = variableInput.properties.description;
-                                    if (variableInput.properties.hasOwnProperty("types")) node.inputTypes[input] = variableInput.properties.types;
+                                    if (variableInput.properties.hasOwnProperty("types")) node.inputTypes[input] = variableInput.properties.types; else node.inputTypes[input] = '';
                                 }
                             }
                             if (message.result.controls[control].hasOwnProperty("variableOutputs")) {
@@ -163,7 +174,7 @@
                                     let variableOutput = message.result.controls[control].variableOutputs[i];
                                     if (variableOutput.properties.hasOwnProperty("label")) node.outputLabels2[output] = variableOutput.properties.label;
                                     if (variableOutput.properties.hasOwnProperty("description")) node.outputDescriptions[output] = variableOutput.properties.description;
-                                    if (variableOutput.properties.hasOwnProperty("types")) node.outputTypes[output] = variableOutput.properties.types;
+                                    if (variableOutput.properties.hasOwnProperty("types")) node.outputTypes[output] = variableOutput.properties.types; else node.outputTypes[output] = '';
                                 }
                             }
                         }
@@ -190,6 +201,7 @@
             var node = this;
 
             var uiElement = $("#node-input-uielement").val();
+            node.uiElementLabel = $("#node-input-uielement option:selected").text();
             var room = $("#node-input-room").val();
             var label = $("#node-input-label").val();
 

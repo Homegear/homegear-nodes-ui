@@ -7,11 +7,20 @@
       "uielement": "UI-Element"
     }
   },
+  "ui-hvac": {
+    "label": {
+      "heatingSliderMode": "Heizung",
+      "heatingSliderModeWindow": "Heizung mit Fenster",
+      "ventilationMode": "4-stufige Lüftung"
+    },
+    "paletteHelp": "<p>Visualisiert Heizungen, Klimaanlagen und Lüftungen in Homegears UI.</p>",
+    "help": "<p>Dieser Knoten visualisiert Heizungen, Klimaanlagen und Lüftungen in Homegears UI.</p>"
+  },
   "ui-socket": {
     "label": {
       "socketSwitch": "Steckdose"
     },
-    "paletteHelp": "<p>Abonniert Ereignisse von Variablen.</p>",
-    "help": "<p>Dieser Knoten abonniert Ereignisse von Variablen. Um zu vermeiden, dass Ereignisse zu schnell erneut auftreten, können Sie die \"Refraktärperiode\" (in ms) einstellen. Um alle Ereignisse auszugeben, setzen Sie \"Refraktärperiode\" auf <code>0</code>.<p><p>Um Rückkopplungsschleifen zu unterbinden (Variable 1 setzt Variable 2, wodurch Variable 2 Variable 1 setzt), kann die \"Verhinderung von Rückkopplungsschleifen\" aktiviert werden. Fügen Sie alle Variablen, die die Schleife verursachen, derselben Schleifenverhinderungsgruppe hinzu und legen Sie eine Gruppenrefraktärzeit fest, die lang genug ist, um alle Rückkopplungsereignisse abzufangen. Der Eingang kann verwendet werden, um die Ausgabe des aktuellen Variablenwerts zu erzwingen.</p>"
+    "paletteHelp": "<p>Visualisiert Steckdosen in Homegears UI.</p>",
+    "help": "<p>Dieser Knoten visualisiert Steckdosen in Homegears UI.</p>"
   }
 }

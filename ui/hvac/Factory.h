@@ -31,7 +31,7 @@
 #define HOMEGEAR_NODES_UI_UI_HEATING_FACTORY_H_
 
 #include <homegear-node/NodeFactory.h>
-#include "Heating.h"
+#include "Hvac.h"
 
 class MyFactory : Flows::NodeFactory
 {
