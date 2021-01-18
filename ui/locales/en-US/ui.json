@@ -26,7 +26,19 @@
       "ventilationMode": "Ventilation with four levels"
     },
     "paletteHelp": "<p>Visualizes HVAC devices in Homegear's UI.</p>",
-    "help": "<p>This node visualized HVAC devices in Homegear's UI.</p>"
+    "help": "<p>This node visualizes HVAC devices in Homegear's UI.</p>"
+  },
+  "ui-light": {
+    "label": {
+      "light": "light",
+      "lightingButton": "Light button",
+      "lightingSwitch": "Light switch",
+      "lightingSwitchBrightness": "Dimmable light",
+      "lightingSwitchBrightnessTemp": "Dimmable light with color temperature",
+      "lightingSwitchColor": "Colored light"
+    },
+    "paletteHelp": "<p>Visualizes lights in Homegear's UI.</p>",
+    "help": "<p>This node visualizes lights in Homegear's UI.</p>"
   },
   "ui-slider": {
     "label": {
