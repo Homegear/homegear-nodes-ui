@@ -4,11 +4,22 @@
       "name": "Name",
       "room": "Room",
       "label": "Label",
-      "uielement": "UI element"
+      "uielement": "UI element",
+      "icon": "Icon"
     }
+  },
+  "ui-door": {
+    "label": {
+      "door": "door",
+      "doorHandle": "Door contact or handle",
+      "doorLock": "Door lock status"
+    },
+    "paletteHelp": "<p>Visualizes doors in Homegear's UI.</p>",
+    "help": "<p>This node visualizes doors in Homegear's UI.</p>"
   },
   "ui-hvac": {
     "label": {
+      "hvac": "hvac",
       "heatingSliderMode": "Heating",
       "heatingSliderModeWindow": "Heating with window",
       "ventilationMode": "Ventilation with four levels"
@@ -18,9 +29,42 @@
   },
   "ui-socket": {
     "label": {
+      "socket": "socket",
       "socketSwitch": "Socket"
     },
     "paletteHelp": "<p>Visualizes sockets in Homegear's UI.</p>",
     "help": "<p>This node visualizes sockets in Homegear's UI.</p>"
+  },
+  "ui-status": {
+    "label": {
+      "status": "status",
+      "genericStatus": "Status"
+    },
+    "paletteHelp": "<p>Visualizes a status (an arbitrary text) in Homegear's UI.</p>",
+    "help": "<p>This node visualizes a status (an arbitrary text) in Homegear's UI.</p>"
+  },
+  "ui-switch": {
+    "label": {
+      "switch": "switch",
+      "genericSwitch": "Switch",
+      "onlabel": "On label",
+      "offlabel": "Off label",
+      "on": "on",
+      "off": "off"
+    },
+    "paletteHelp": "<p>Visualizes a switch in Homegear's UI.</p>",
+    "help": "<p>This node visualizes a switch in Homegear's UI.</p>"
+  },
+  "ui-window": {
+    "label": {
+      "window": "window",
+      "windowHandle": "Window contact or handle",
+      "windowButtonsUpDown": "Open/close window",
+      "windowButtonsUpDownRainalarm": "Open/close window with rain alarm",
+      "windowButtonsPosition": "Set window position",
+      "windowButtonsPositionRainalarm": "Set window position with rain alarm"
+    },
+    "paletteHelp": "<p>Visualizes windows in Homegear's UI.</p>",
+    "help": "<p>This node visualizes windows in Homegear's UI.</p>"
   }
 }

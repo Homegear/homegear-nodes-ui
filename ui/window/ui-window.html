@@ -1,4 +1,4 @@
-<script type="text/x-red" data-template-name="ui-socket">
+<script type="text/x-red" data-template-name="ui-window">
     <div class="form-row">
         <label style="width: 130px;" for="node-input-name"><i class="fa fa-tag"></i> <span data-i18n="ui/ui-common:ui-common.label.name"></span></label>
         <input style="width: 65%;" type="text" id="node-input-name" data-i18n="[placeholder]ui/ui-common:ui-common.label.name">
@@ -22,7 +22,7 @@
     </div>
 </script>
 <script type="text/javascript">
-    RED.nodes.registerType('ui-socket', {
+    RED.nodes.registerType('ui-window', {
         category: 'homegear ui',
         color: "#191b1f",
         defaults: {
@@ -70,12 +70,12 @@
                 description: description
             }
         },
-        icon: "font-awesome/fa-plug",
+        icon: "font-awesome/fa-window-maximize",
         paletteLabel: function () {
-            return RED._("ui/ui-socket:ui-socket.label.socket");
+            return RED._("ui/ui-window:ui-window.label.window");
         },
         label: function () {
-            return this.name || this.uiElementLabel || RED._("ui/ui-socket:ui-socket.label.socket");
+            return this.name || this.uiElementLabel || RED._("ui/ui-window:ui-window.label.window");
         },
         labelStyle: function () {
             return "red-ui-flow-node-label-white";
@@ -209,8 +209,11 @@
             //}}}
 
             //{{{ Fill ui elements - this needs to be done here and not in HTML so the label is loaded before initializing select2.
-            uiElementSelect.append($("<option />").val("Base.socketButton").text(RED._("ui/ui-socket:ui-socket.label.socketButton")));
-            uiElementSelect.append($("<option />").val("Base.socketSwitch").text(RED._("ui/ui-socket:ui-socket.label.socketSwitch")));
+            uiElementSelect.append($("<option />").val("Base.windowHandle").text(RED._("ui/ui-window:ui-window.label.windowHandle")));
+            uiElementSelect.append($("<option />").val("Base.windowButtonsPosition").text(RED._("ui/ui-window:ui-window.label.windowButtonsPosition")));
+            uiElementSelect.append($("<option />").val("Base.windowButtonsPositionRainalarm").text(RED._("ui/ui-window:ui-window.label.windowButtonsPositionRainalarm")));
+            uiElementSelect.append($("<option />").val("Base.windowButtonsUpDown").text(RED._("ui/ui-window:ui-window.label.windowButtonsUpDown")));
+            uiElementSelect.append($("<option />").val("Base.windowButtonsUpDownRainalarm").text(RED._("ui/ui-window:ui-window.label.windowButtonsUpDownRainalarm")));
             uiElementSelect.val(node.uielement);
             //}}}
 

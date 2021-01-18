@@ -27,8 +27,8 @@
  * files in the program, then also delete it here.
  */
 
-#ifndef HOMEGEAR_NODES_UI_UI_HEATING_HEATING_H_
-#define HOMEGEAR_NODES_UI_UI_HEATING_HEATING_H_
+#ifndef HOMEGEAR_NODES_UI_UI_HVAC_HVAC_H_
+#define HOMEGEAR_NODES_UI_UI_HVAC_HVAC_H_
 
 #include "../base/UiBase.h"
 

@@ -44,8 +44,14 @@ class UiBase : public Flows::INode {
 
   void setNodeVariable(const std::string &variable, const Flows::PVariable &value) override;
  private:
+  std::vector<std::pair<uint32_t, uint32_t>> _variableInputIndexByNodeInputIndex;
+  std::unordered_map<uint32_t, std::unordered_map<uint32_t, uint32_t>> _nodeInputIndexByVariableInputIndex;
+  std::vector<std::pair<uint32_t, uint32_t>> _variableOutputIndexByNodeOutputIndex;
+  std::unordered_map<uint32_t, std::unordered_map<uint32_t, uint32_t>> _nodeOutputIndexByVariableOutputIndex;
+  Flows::PVariable  _inputRendering;
   std::string _uiElement;
   uint64_t _room = 0;
+  std::string _icon;
   std::string _label;
 
   void variableEvent(const std::string &source, uint64_t peerId, int32_t channel, const std::string &variable, const Flows::PVariable &value, const Flows::PVariable &metadata) override;

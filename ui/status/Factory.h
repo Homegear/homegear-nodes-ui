@@ -27,11 +27,11 @@
  * files in the program, then also delete it here.
  */
 
-#ifndef HOMEGEAR_NODES_UI_UI_HVAC_FACTORY_H_
-#define HOMEGEAR_NODES_UI_UI_HVAC_FACTORY_H_
+#ifndef HOMEGEAR_NODES_UI_UI_STATUS_FACTORY_H_
+#define HOMEGEAR_NODES_UI_UI_STATUS_FACTORY_H_
 
 #include <homegear-node/NodeFactory.h>
-#include "Hvac.h"
+#include "Status.h"
 
 class MyFactory : Flows::NodeFactory
 {

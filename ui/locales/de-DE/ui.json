@@ -4,11 +4,22 @@
       "name": "Name",
       "room": "Raum",
       "label": "Beschriftung",
-      "uielement": "UI-Element"
+      "uielement": "UI-Element",
+      "icon": "Icon"
     }
+  },
+  "ui-door": {
+    "label": {
+      "door": "Tür",
+      "doorHandle": "Türkontakt oder -griff",
+      "doorLock": "Türschlossstatus"
+    },
+    "paletteHelp": "<p>Visualisiert Türen in Homegears UI.</p>",
+    "help": "<p>Diser Knoten visualisiert Türen in Homegears UI.</p>"
   },
   "ui-hvac": {
     "label": {
+      "hvac": "Klima",
       "heatingSliderMode": "Heizung",
       "heatingSliderModeWindow": "Heizung mit Fenster",
       "ventilationMode": "4-stufige Lüftung"
@@ -18,9 +29,42 @@
   },
   "ui-socket": {
     "label": {
+      "socket": "Steckdose",
       "socketSwitch": "Steckdose"
     },
     "paletteHelp": "<p>Visualisiert Steckdosen in Homegears UI.</p>",
     "help": "<p>Dieser Knoten visualisiert Steckdosen in Homegears UI.</p>"
+  },
+  "ui-status": {
+    "label": {
+      "status": "Status",
+      "genericStatus": "Status"
+    },
+    "paletteHelp": "<p>Visualisiert einen Status (einen beliebigen Text) in Homegears UI.</p>",
+    "help": "<p>Dieser Knoten visualisiert einen Status (einen beliebigen Text) in Homegears UI.</p>"
+  },
+  "ui-switch": {
+    "label": {
+      "switch": "Schalter",
+      "genericSwitch": "Schalter",
+      "onlabel": "An-Beschriftung",
+      "offlabel": "Aus-Beschriftung",
+      "on": "an",
+      "off": "aus"
+    },
+    "paletteHelp": "<p>Visualisiert einen Schalter in Homegears UI.</p>",
+    "help": "<p>Dieser Knoten visualisiert einen Schalter in Homegears UI.</p>"
+  },
+  "ui-window": {
+    "label": {
+      "window": "Fenster",
+      "windowHandle": "Fensterkontakt oder -griff",
+      "windowButtonsUpDown": "Fenster auf/zu",
+      "windowButtonsUpDownRainalarm": "Fenster auf/zu mit Regenalarm",
+      "windowButtonsPosition": "Fensterposition",
+      "windowButtonsPositionRainalarm": "Fensterposition mit Regenalarm"
+    },
+    "paletteHelp": "<p>Visualisiert Fenster in Homegears UI.</p>",
+    "help": "<p>Dieser Knoten visualisiert Fenster in Homegears UI.</p>"
   }
 }

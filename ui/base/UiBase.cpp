@@ -38,11 +38,39 @@ UiBase::~UiBase() = default;
 
 bool UiBase::init(const Flows::PNodeInfo &info) {
   try {
-    auto settingsIterator = info->info->structValue->find("uielement");
+    auto settingsIterator = info->info->structValue->find("inputIndexes");
+    if (settingsIterator != info->info->structValue->end()) {
+      _variableInputIndexByNodeInputIndex.reserve(settingsIterator->second->arrayValue->size());
+      uint32_t nodeInputIndex = 0;
+      for (auto &element : *settingsIterator->second->arrayValue) {
+        if (element->arrayValue->size() != 2) continue;
+        _variableInputIndexByNodeInputIndex.emplace_back(std::make_pair(element->arrayValue->at(0)->integerValue, element->arrayValue->at(1)->integerValue));
+        _nodeInputIndexByVariableInputIndex[element->arrayValue->at(0)->integerValue][element->arrayValue->at(1)->integerValue] = nodeInputIndex++;
+      }
+    }
+
+    settingsIterator = info->info->structValue->find("outputIndexes");
+    if (settingsIterator != info->info->structValue->end()) {
+      _variableOutputIndexByNodeOutputIndex.reserve(settingsIterator->second->arrayValue->size());
+      uint32_t nodeOutputIndex = 0;
+      for (auto &element : *settingsIterator->second->arrayValue) {
+        if (element->arrayValue->size() != 2) continue;
+        _variableOutputIndexByNodeOutputIndex.emplace_back(std::make_pair(element->arrayValue->at(0)->integerValue, element->arrayValue->at(1)->integerValue));
+        _nodeOutputIndexByVariableOutputIndex[element->arrayValue->at(0)->integerValue][element->arrayValue->at(1)->integerValue] = nodeOutputIndex++;
+      }
+    }
+
+    settingsIterator = info->info->structValue->find("inputRendering");
+    if (settingsIterator != info->info->structValue->end()) _inputRendering = settingsIterator->second;
+
+    settingsIterator = info->info->structValue->find("uielement");
     if (settingsIterator != info->info->structValue->end()) _uiElement = settingsIterator->second->stringValue;
 
     settingsIterator = info->info->structValue->find("room");
     if (settingsIterator != info->info->structValue->end()) _room = Flows::Math::getUnsignedNumber64(settingsIterator->second->stringValue);
+
+    settingsIterator = info->info->structValue->find("uielementicon");
+    if (settingsIterator != info->info->structValue->end()) _icon = settingsIterator->second->stringValue;
 
     settingsIterator = info->info->structValue->find("label");
     if (settingsIterator != info->info->structValue->end()) _label = settingsIterator->second->stringValue;
@@ -104,10 +132,14 @@ bool UiBase::start() {
         auto outerArray = std::make_shared<Flows::Variable>(Flows::VariableType::tArray);
         outerArray->arrayValue->reserve(templateIterator->second->arrayValue->size());
         for (uint32_t i = 0; i < templateIterator->second->arrayValue->size(); i++) {
+          auto inputIndexIterator = _nodeInputIndexByVariableInputIndex[0].find(i);
+          if (inputIndexIterator == _nodeInputIndexByVariableInputIndex[0].end()) continue;
+          auto nodeInputIndex = inputIndexIterator->second;
           auto entry = std::make_shared<Flows::Variable>(Flows::VariableType::tStruct);
           entry->structValue->emplace("peer", std::make_shared<Flows::Variable>(0x50000000));
-          entry->structValue->emplace("channel", std::make_shared<Flows::Variable>(i));
+          entry->structValue->emplace("channel", std::make_shared<Flows::Variable>(nodeInputIndex));
           entry->structValue->emplace("name", std::make_shared<Flows::Variable>(_id));
+          if (_inputRendering && nodeInputIndex < _inputRendering->arrayValue->size()) entry->structValue->emplace("rendering", _inputRendering->arrayValue->at(nodeInputIndex));
           outerArray->arrayValue->emplace_back(entry);
         }
         inputPeers->arrayValue->emplace_back(outerArray);
@@ -118,31 +150,37 @@ bool UiBase::start() {
         auto outerArray = std::make_shared<Flows::Variable>(Flows::VariableType::tArray);
         outerArray->arrayValue->reserve(templateIterator->second->arrayValue->size());
         for (uint32_t i = 0; i < templateIterator->second->arrayValue->size(); i++) {
+          auto outputIndexIterator = _nodeOutputIndexByVariableOutputIndex[0].find(i);
+          if (outputIndexIterator == _nodeOutputIndexByVariableOutputIndex[0].end()) continue;
+          auto nodeOutputIndex = outputIndexIterator->second;
           auto entry = std::make_shared<Flows::Variable>(Flows::VariableType::tStruct);
           entry->structValue->emplace("peer", std::make_shared<Flows::Variable>(0x50000001));
-          entry->structValue->emplace("channel", std::make_shared<Flows::Variable>(i));
+          entry->structValue->emplace("channel", std::make_shared<Flows::Variable>(nodeOutputIndex));
           entry->structValue->emplace("name", std::make_shared<Flows::Variable>(_id));
           outerArray->arrayValue->emplace_back(entry);
         }
         outputPeers->arrayValue->emplace_back(outerArray);
       }
     } else {
-      uint32_t input = 0;
-      uint32_t output = 0;
       auto controlsIterator = uiElementTemplate->structValue->find("controls");
       if (controlsIterator != uiElementTemplate->structValue->end()) {
         inputPeers->arrayValue->reserve(controlsIterator->second->arrayValue->size());
         outputPeers->arrayValue->reserve(controlsIterator->second->arrayValue->size());
+        uint32_t controlIndex = 0;
         for (auto &control : *controlsIterator->second->arrayValue) {
           auto templateIterator = control->structValue->find("variableInputs");
           if (templateIterator != control->structValue->end()) {
             auto outerArray = std::make_shared<Flows::Variable>(Flows::VariableType::tArray);
             outerArray->arrayValue->reserve(templateIterator->second->arrayValue->size());
-            for (uint32_t i = 0; i < templateIterator->second->arrayValue->size(); i++, input++) {
+            for (uint32_t i = 0; i < templateIterator->second->arrayValue->size(); i++) {
+              auto inputIndexIterator = _nodeInputIndexByVariableInputIndex[controlIndex].find(i);
+              if (inputIndexIterator == _nodeInputIndexByVariableInputIndex[controlIndex].end()) continue;
+              auto nodeInputIndex = inputIndexIterator->second;
               auto entry = std::make_shared<Flows::Variable>(Flows::VariableType::tStruct);
               entry->structValue->emplace("peer", std::make_shared<Flows::Variable>(0x50000000));
-              entry->structValue->emplace("channel", std::make_shared<Flows::Variable>(input));
+              entry->structValue->emplace("channel", std::make_shared<Flows::Variable>(nodeInputIndex));
               entry->structValue->emplace("name", std::make_shared<Flows::Variable>(_id));
+              if (_inputRendering && nodeInputIndex < _inputRendering->arrayValue->size()) entry->structValue->emplace("rendering", _inputRendering->arrayValue->at(nodeInputIndex));
               outerArray->arrayValue->emplace_back(entry);
             }
             inputPeers->arrayValue->emplace_back(outerArray);
@@ -152,15 +190,19 @@ bool UiBase::start() {
           if (templateIterator != control->structValue->end()) {
             auto outerArray = std::make_shared<Flows::Variable>(Flows::VariableType::tArray);
             outerArray->arrayValue->reserve(templateIterator->second->arrayValue->size());
-            for (uint32_t i = 0; i < templateIterator->second->arrayValue->size(); i++, output++) {
+            for (uint32_t i = 0; i < templateIterator->second->arrayValue->size(); i++) {
+              auto outputIndexIterator = _nodeOutputIndexByVariableOutputIndex[controlIndex].find(i);
+              if (outputIndexIterator == _nodeOutputIndexByVariableOutputIndex[controlIndex].end()) continue;
+              auto nodeOutputIndex = outputIndexIterator->second;
               auto entry = std::make_shared<Flows::Variable>(Flows::VariableType::tStruct);
               entry->structValue->emplace("peer", std::make_shared<Flows::Variable>(0x50000001));
-              entry->structValue->emplace("channel", std::make_shared<Flows::Variable>(output));
+              entry->structValue->emplace("channel", std::make_shared<Flows::Variable>(nodeOutputIndex));
               entry->structValue->emplace("name", std::make_shared<Flows::Variable>(_id));
               outerArray->arrayValue->emplace_back(entry);
             }
             outputPeers->arrayValue->emplace_back(outerArray);
           }
+          controlIndex++;
         }
       }
     }
@@ -169,6 +211,14 @@ bool UiBase::start() {
     data->structValue->emplace("node", std::make_shared<Flows::Variable>(_id));
     data->structValue->emplace("room", std::make_shared<Flows::Variable>(_room));
     data->structValue->emplace("label", std::make_shared<Flows::Variable>(_label));
+    if (!_icon.empty()) {
+      auto iconStruct = std::make_shared<Flows::Variable>(Flows::VariableType::tStruct);
+      auto iconElement = std::make_shared<Flows::Variable>(Flows::VariableType::tStruct);
+      iconElement->structValue->emplace("name", std::make_shared<Flows::Variable>(_icon));
+      iconElement->structValue->emplace("color", std::make_shared<Flows::Variable>("inactive"));
+      iconStruct->structValue->emplace("main", iconElement);
+      data->structValue->emplace("icons", iconStruct);
+    }
     data->structValue->emplace("metadata", std::make_shared<Flows::Variable>(Flows::VariableType::tStruct));
     data->structValue->emplace("inputPeers", inputPeers);
     data->structValue->emplace("outputPeers", outputPeers);
@@ -209,16 +259,24 @@ void UiBase::variableEvent(const std::string &source, uint64_t peerId, int32_t c
     outputMessage->structValue->emplace("payload", value);
     output(channel, outputMessage);
 
+    if (channel >= (int32_t)_variableOutputIndexByNodeOutputIndex.size()) return;
+    auto indexIterator1 = _nodeInputIndexByVariableInputIndex.find(_variableOutputIndexByNodeOutputIndex.at(channel).first);
+    if (indexIterator1 == _nodeInputIndexByVariableInputIndex.end()) return;
+    auto indexIterator2 = indexIterator1->second.find(_variableOutputIndexByNodeOutputIndex.at(channel).second);
+    if (indexIterator2 == indexIterator1->second.end()) return;
+
+    auto inputIndex = indexIterator2->second;
+
     auto parameters = std::make_shared<Flows::Array>();
     parameters->reserve(5);
     parameters->emplace_back(std::make_shared<Flows::Variable>(source));
     parameters->emplace_back(std::make_shared<Flows::Variable>(0x50000000));
-    parameters->emplace_back(std::make_shared<Flows::Variable>(channel));
+    parameters->emplace_back(std::make_shared<Flows::Variable>(inputIndex));
     parameters->emplace_back(std::make_shared<Flows::Variable>(_id));
     parameters->emplace_back(value);
     invoke("nodeBlueVariableEvent", parameters);
 
-    setNodeData("i" + std::to_string(channel), value);
+    setNodeData("o" + std::to_string(channel), value);
   }
   catch (const std::exception &ex) {
     _out->printEx(__FILE__, __LINE__, __PRETTY_FUNCTION__, ex.what());
@@ -236,7 +294,7 @@ void UiBase::input(const Flows::PNodeInfo &info, uint32_t index, const Flows::PV
     parameters->emplace_back(message->structValue->at("payload"));
     invoke("nodeBlueVariableEvent", parameters);
 
-    setNodeData("o" + std::to_string(index), message->structValue->at("payload"));
+    setNodeData("i" + std::to_string(index), message->structValue->at("payload"));
   }
   catch (const std::exception &ex) {
     _out->printEx(__FILE__, __LINE__, __PRETTY_FUNCTION__, ex.what());

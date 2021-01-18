@@ -27,18 +27,14 @@
  * files in the program, then also delete it here.
  */
 
-#ifndef HOMEGEAR_NODES_UI_UI_HVAC_FACTORY_H_
-#define HOMEGEAR_NODES_UI_UI_HVAC_FACTORY_H_
+#include "Factory.h"
 
-#include <homegear-node/NodeFactory.h>
-#include "Hvac.h"
-
-class MyFactory : Flows::NodeFactory
+Flows::INode* MyFactory::createNode(const std::string &path, const std::string &type, const std::atomic_bool* frontendConnected)
 {
-public:
-	Flows::INode* createNode(const std::string &path, const std::string &type, const std::atomic_bool* frontendConnected) override;
-};
+	return new Ui::Window(path, type, frontendConnected);
+}
 
-extern "C" Flows::NodeFactory* getFactory();
-
-#endif
+Flows::NodeFactory* getFactory()
+{
+	return (Flows::NodeFactory*) (new MyFactory);
+}
