@@ -60,8 +60,14 @@ bool UiBase::init(const Flows::PNodeInfo &info) {
       }
     }
 
+    settingsIterator = info->info->structValue->find("unit");
+    if (settingsIterator != info->info->structValue->end()) _unit = settingsIterator->second->stringValue;
+
     settingsIterator = info->info->structValue->find("inputRendering");
     if (settingsIterator != info->info->structValue->end()) _inputRendering = settingsIterator->second;
+
+    settingsIterator = info->info->structValue->find("dynamicMetadata");
+    if (settingsIterator != info->info->structValue->end()) _dynamicMetadata = settingsIterator->second;
 
     settingsIterator = info->info->structValue->find("uielement");
     if (settingsIterator != info->info->structValue->end()) _uiElement = settingsIterator->second->stringValue;
@@ -74,6 +80,15 @@ bool UiBase::init(const Flows::PNodeInfo &info) {
 
     settingsIterator = info->info->structValue->find("label");
     if (settingsIterator != info->info->structValue->end()) _label = settingsIterator->second->stringValue;
+
+    settingsIterator = info->info->structValue->find("minimumvalue");
+    if (settingsIterator != info->info->structValue->end()) {
+      _rangeValuesSet = true;
+      _minimumValue = Flows::Math::getDouble(settingsIterator->second->stringValue);
+    }
+
+    settingsIterator = info->info->structValue->find("maximumvalue");
+    if (settingsIterator != info->info->structValue->end()) _maximumValue = Flows::Math::getDouble(settingsIterator->second->stringValue);
 
     uint32_t outputs = 0;
     settingsIterator = info->info->structValue->find("outputs");
@@ -139,6 +154,13 @@ bool UiBase::start() {
           entry->structValue->emplace("peer", std::make_shared<Flows::Variable>(0x50000000));
           entry->structValue->emplace("channel", std::make_shared<Flows::Variable>(nodeInputIndex));
           entry->structValue->emplace("name", std::make_shared<Flows::Variable>(_id));
+          if (!_unit.empty()) entry->structValue->emplace("unit", std::make_shared<Flows::Variable>(_unit));
+          if (_rangeValuesSet) {
+            entry->structValue->emplace("minimum", std::make_shared<Flows::Variable>(_minimumValue));
+            entry->structValue->emplace("minimumScaled", std::make_shared<Flows::Variable>(_minimumValue));
+            entry->structValue->emplace("maximum", std::make_shared<Flows::Variable>(_maximumValue));
+            entry->structValue->emplace("maximumScaled", std::make_shared<Flows::Variable>(_maximumValue));
+          }
           if (_inputRendering && nodeInputIndex < _inputRendering->arrayValue->size()) entry->structValue->emplace("rendering", _inputRendering->arrayValue->at(nodeInputIndex));
           outerArray->arrayValue->emplace_back(entry);
         }
@@ -180,6 +202,13 @@ bool UiBase::start() {
               entry->structValue->emplace("peer", std::make_shared<Flows::Variable>(0x50000000));
               entry->structValue->emplace("channel", std::make_shared<Flows::Variable>(nodeInputIndex));
               entry->structValue->emplace("name", std::make_shared<Flows::Variable>(_id));
+              if (!_unit.empty()) entry->structValue->emplace("unit", std::make_shared<Flows::Variable>(_unit));
+              if (_rangeValuesSet) {
+                entry->structValue->emplace("minimum", std::make_shared<Flows::Variable>(_minimumValue));
+                entry->structValue->emplace("minimumScaled", std::make_shared<Flows::Variable>(_minimumValue));
+                entry->structValue->emplace("maximum", std::make_shared<Flows::Variable>(_maximumValue));
+                entry->structValue->emplace("maximumScaled", std::make_shared<Flows::Variable>(_maximumValue));
+              }
               if (_inputRendering && nodeInputIndex < _inputRendering->arrayValue->size()) entry->structValue->emplace("rendering", _inputRendering->arrayValue->at(nodeInputIndex));
               outerArray->arrayValue->emplace_back(entry);
             }
@@ -227,7 +256,8 @@ bool UiBase::start() {
     parameters->reserve(3);
     parameters->emplace_back(std::make_shared<Flows::Variable>(_uiElement));
     parameters->emplace_back(data);
-    parameters->emplace_back(std::make_shared<Flows::Variable>(Flows::VariableType::tStruct));
+    if (!_dynamicMetadata) _dynamicMetadata = std::make_shared<Flows::Variable>(Flows::VariableType::tStruct);
+    parameters->emplace_back(_dynamicMetadata);
     auto result = invoke("addUiElement", parameters);
     if (result->errorStruct) {
       _out->printError("Error: Could not (re-)create UI element. An error occured trying to add the UI element: " + uiElementTemplate->structValue->at("faultString")->stringValue);
@@ -276,6 +306,7 @@ void UiBase::variableEvent(const std::string &source, uint64_t peerId, int32_t c
     parameters->emplace_back(value);
     invoke("nodeBlueVariableEvent", parameters);
 
+    setNodeData("i" + std::to_string(inputIndex), value);
     setNodeData("o" + std::to_string(channel), value);
   }
   catch (const std::exception &ex) {

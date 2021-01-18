@@ -20,12 +20,25 @@
   "ui-hvac": {
     "label": {
       "hvac": "Klima",
+      "stepsize": "Schrittgröße",
       "heatingSliderMode": "Heizung",
       "heatingSliderModeWindow": "Heizung mit Fenster",
       "ventilationMode": "4-stufige Lüftung"
     },
     "paletteHelp": "<p>Visualisiert Heizungen, Klimaanlagen und Lüftungen in Homegears UI.</p>",
     "help": "<p>Dieser Knoten visualisiert Heizungen, Klimaanlagen und Lüftungen in Homegears UI.</p>"
+  },
+  "ui-slider": {
+    "label": {
+      "slider": "Schieberegler",
+      "unit": "Einheit",
+      "minimumvalue": "Minimum",
+      "maximumvalue": "Maximum",
+      "stepsize": "Schrittgröße",
+      "genericSlider": "Schieberegler"
+    },
+    "paletteHelp": "<p>Visualisiert einen Zahlenwert innerhalb eines definierten Wertebereichs in Homegears UI.</p>",
+    "help": "<p>Diser Knoten visualisiert einen Zahlenwert innerhalb eines definierten Wertebereichs in Homegears UI.</p>"
   },
   "ui-socket": {
     "label": {

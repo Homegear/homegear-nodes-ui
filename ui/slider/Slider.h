@@ -27,43 +27,20 @@
  * files in the program, then also delete it here.
  */
 
-#ifndef HOMEGEAR_NODES_UI_UI_BASE_UIBASE_H_
-#define HOMEGEAR_NODES_UI_UI_BASE_UIBASE_H_
+#ifndef HOMEGEAR_NODES_UI_UI_SLIDER_SLIDER_H_
+#define HOMEGEAR_NODES_UI_UI_SLIDER_SLIDER_H_
 
-#include <homegear-node/INode.h>
+#include "../base/UiBase.h"
 
 namespace Ui {
 
-class UiBase : public Flows::INode {
+class Slider : public UiBase {
  public:
-  UiBase(const std::string &path, const std::string &type, const std::atomic_bool *frontendConnected);
-  ~UiBase() override;
-
-  bool init(const Flows::PNodeInfo &info) override;
-  bool start() override;
-
-  void setNodeVariable(const std::string &variable, const Flows::PVariable &value) override;
+  Slider(const std::string &path, const std::string &type, const std::atomic_bool *frontendConnected);
+  ~Slider() override;
  private:
-  std::vector<std::pair<uint32_t, uint32_t>> _variableInputIndexByNodeInputIndex;
-  std::unordered_map<uint32_t, std::unordered_map<uint32_t, uint32_t>> _nodeInputIndexByVariableInputIndex;
-  std::vector<std::pair<uint32_t, uint32_t>> _variableOutputIndexByNodeOutputIndex;
-  std::unordered_map<uint32_t, std::unordered_map<uint32_t, uint32_t>> _nodeOutputIndexByVariableOutputIndex;
-  Flows::PVariable _inputRendering;
-  Flows::PVariable _dynamicMetadata;
-  std::string _uiElement;
-  uint64_t _room = 0;
-  std::string _unit;
-  std::string _icon;
-  std::string _label;
-  bool _rangeValuesSet = false;
-  double _minimumValue = 0;
-  double _maximumValue = 0;
-
-  void variableEvent(const std::string &source, uint64_t peerId, int32_t channel, const std::string &variable, const Flows::PVariable &value, const Flows::PVariable &metadata) override;
-
-  void input(const Flows::PNodeInfo &info, uint32_t index, const Flows::PVariable &message) override;
 };
 
 }
 
-#endif //HOMEGEAR_NODES_UI_UI_BASE_UIBASE_H_
+#endif

@@ -20,12 +20,25 @@
   "ui-hvac": {
     "label": {
       "hvac": "hvac",
+      "stepsize": "Step size",
       "heatingSliderMode": "Heating",
       "heatingSliderModeWindow": "Heating with window",
       "ventilationMode": "Ventilation with four levels"
     },
     "paletteHelp": "<p>Visualizes HVAC devices in Homegear's UI.</p>",
     "help": "<p>This node visualized HVAC devices in Homegear's UI.</p>"
+  },
+  "ui-slider": {
+    "label": {
+      "slider": "slider",
+      "unit": "Unit",
+      "minimumvalue": "Minimum",
+      "maximumvalue": "Maximum",
+      "stepsize": "Step size",
+      "genericSlider": "Slider"
+    },
+    "paletteHelp": "<p>Visualizes a ranged numeric value in Homegear's UI.</p>",
+    "help": "<p>This node visualizes a ranged numeric value in Homegear's UI.</p>"
   },
   "ui-socket": {
     "label": {

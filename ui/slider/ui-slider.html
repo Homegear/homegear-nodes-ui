@@ -1,4 +1,4 @@
-<script type="text/x-red" data-template-name="ui-hvac">
+<script type="text/x-red" data-template-name="ui-slider">
     <div class="form-row">
         <label style="width: 130px;" for="node-input-name"><i class="fa fa-tag"></i> <span data-i18n="ui/ui-common:ui-common.label.name"></span></label>
         <input style="width: 65%;" type="text" id="node-input-name" data-i18n="[placeholder]ui/ui-common:ui-common.label.name">
@@ -17,36 +17,86 @@
         </select>
     </div>
     <div class="form-row">
+        <label style="width: 130px;" for="node-input-uielementicon"><i class="fa fa-picture-o"></i> <span data-i18n="ui/ui-common:ui-common.label.icon"></span></label>
+        <input type="hidden" id="node-input-uielementicon">
+    </div>
+    <div class="form-row">
         <label style="width: 130px;" for="node-input-label"><i class="fa fa-tag"></i> <span data-i18n="ui/ui-common:ui-common.label.label"></span></label>
         <input style="width: 65%;" type="text" id="node-input-label" data-i18n="[placeholder]ui/ui-common:ui-common.label.label">
     </div>
-    <div id="node-input-stepsize-container" class="form-row hide">
-        <label style="width: 130px;" for="node-input-stepsize"><i class="fa fa-tag"></i> <span data-i18n="ui/ui-hvac:ui-hvac.label.stepsize"></span></label>
-        <input style="width: 65%;" type="text" id="node-input-stepsize" data-i18n="[placeholder]ui/ui-hvac:ui-hvac.label.stepsize">
+    <div class="form-row">
+        <label style="width: 130px;" for="node-input-unit"><i class="fa fa-tag"></i> <span data-i18n="ui/ui-slider:ui-slider.label.unit"></span></label>
+        <input style="width: 65%;" type="text" id="node-input-unit" data-i18n="[placeholder]ui/ui-slider:ui-slider.label.unit">
+    </div>
+    <div class="form-row">
+        <label style="width: 130px;" for="node-input-minimumvalue"><i class="fa fa-long-arrow-down"></i> <span data-i18n="ui/ui-slider:ui-slider.label.minimumvalue"></span></label>
+        <input style="width: 65%;" type="text" id="node-input-minimumvalue" data-i18n="[placeholder]ui/ui-slider:ui-slider.label.minimumvalue">
+    </div>
+    <div class="form-row">
+        <label style="width: 130px;" for="node-input-maximumvalue"><i class="fa fa-long-arrow-up"></i> <span data-i18n="ui/ui-slider:ui-slider.label.maximumvalue"></span></label>
+        <input style="width: 65%;" type="text" id="node-input-maximumvalue" data-i18n="[placeholder]ui/ui-slider:ui-slider.label.maximumvalue">
+    </div>
+    <div class="form-row">
+        <label style="width: 130px;" for="node-input-stepsize"><i class="fa fa-arrows-h"></i> <span data-i18n="ui/ui-slider:ui-slider.label.stepsize"></span></label>
+        <input style="width: 65%;" type="text" id="node-input-stepsize" data-i18n="[placeholder]ui/ui-slider:ui-slider.label.stepsize">
     </div>
 </script>
 <script type="text/javascript">
-    RED.nodes.registerType('ui-hvac', {
+    RED.nodes.registerType('ui-slider', {
         category: 'homegear ui',
         color: "#191b1f",
         defaults: {
             uielement: {
-                value: "", validate: function (v) {
+                value: "Base.genericSlider", validate: function (v) {
                     return v != "";
                 }
             },
+            uielementicon: {value: ""},
             uiElementLabel: {value: ""},
             name: {value: ""},
-            room: {value: "", required:true},
-            label: {value: "", required:true},
+            room: {value: "", required: true},
+            label: {value: "", required: true},
             inputs: {value: 0},
             outputs: {value: 0},
-            stepsize: {value: 0.5, validate: function(v) { return $.isNumeric(v); }},
+            unit: {value: "%"},
+            minimumvalue: {value: 0, validate: function(v) { return $.isNumeric(v) && this.minimumvalue < this.maximumvalue; }},
+            maximumvalue: {value: 100, validate: function(v) { return $.isNumeric(v) && this.minimumvalue < this.maximumvalue; }},
+            stepsize: {value: 1, validate: function(v) { return $.isNumeric(v); }},
             dynamicMetadata: {value: {}},
             inputIndexes: {value: []},
             inputLabels2: {value: []},
             inputDescriptions: {value: []},
             inputTypes: {value: []},
+            inputRendering: {
+                value: [[{
+                    "condition": {
+                        "operator": "e",
+                        "value": "0"
+                    },
+                    "definitions": {
+                        "icons": {
+                            "state": {
+                                "color": "inactive",
+                                "name": "power_1"
+                            }
+                        }
+                    }
+                }, {
+                    "condition": {
+                        "operator": "not",
+                        "value": "0"
+                    },
+                    "definitions": {
+                        "icons": {
+                            "state": {
+                                "color": "active",
+                                "name": "power_1"
+                            }
+                        }
+                    }
+                }
+                ]]
+            },
             outputIndexes: {value: []},
             outputLabels2: {value: []},
             outputDescriptions: {value: []},
@@ -76,18 +126,59 @@
                 description: description
             }
         },
-        icon: "font-awesome/fa-thermometer-half",
+        icon: "font-awesome/fa-sliders",
         paletteLabel: function () {
-            return RED._("ui/ui-hvac:ui-hvac.label.hvac");
+            return RED._("ui/ui-slider:ui-slider.label.slider");
         },
         label: function () {
-            return this.name || this.uiElementLabel || RED._("ui/ui-hvac:ui-hvac.label.hvac");
+            return this.name || this.uiElementLabel || RED._("ui/ui-slider:ui-slider.label.slider");
         },
         labelStyle: function () {
             return "red-ui-flow-node-label-white";
         },
         oneditprepare: function () {
             var node = this;
+
+            //{{{ Setup icon select
+            var iconInput = $('#node-input-uielementicon');
+
+            var iconButton = $('<button type="button" class="red-ui-button red-ui-editor-node-appearance-button">').appendTo(iconInput.parent());
+            $('<i class="fa fa-caret-down"></i>').appendTo(iconButton);
+            var nodeDiv = $('<div>', {class: "red-ui-search-result-node"}).appendTo(iconButton);
+            var colour = RED.utils.getNodeColor(node.type, node._def);
+            var icon_url = RED.nodes.homegearUiIcons.getIconUrl(node.uielementicon);
+            nodeDiv.css('backgroundColor', colour);
+            var borderColor = RED.utils.getDarkerColor(colour);
+            if (borderColor !== colour) {
+                nodeDiv.css('border-color', borderColor)
+            }
+
+            var iconContainer = $('<div/>', {class: "red-ui-palette-icon-container"}).appendTo(nodeDiv);
+            if (icon_url) RED.utils.createIconElement(icon_url, iconContainer, true);
+
+            iconButton.on("click", function (e) {
+                e.preventDefault();
+                var iconPath;
+                var icon = $("#node-input-uielementicon").val() || "";
+                if (icon) {
+                    iconPath = RED.utils.separateIconPath(icon);
+                } else {
+                    iconPath = RED.utils.getDefaultNodeIcon(node._def, node);
+                }
+                var backgroundColor = "#000";
+                RED.editor.showIconPicker(iconButton, backgroundColor, iconPath, false, function (newIcon) {
+                    if (newIcon) newIcon = newIcon.split("/")[1];
+                    $("#node-input-uielementicon").val(newIcon || "");
+                    var icon_url = RED.nodes.homegearUiIcons.getIconUrl(newIcon);
+                    RED.utils.createIconElement(icon_url, iconContainer, true);
+                }, true);
+            });
+            RED.popover.tooltip(iconButton, function () {
+                return $("#node-input-uielementicon").val();
+            });
+            iconInput.val(node.uielementicon);
+
+            //}}}
 
             function updateUiElement() {
                 var uiElement = $("#node-input-uielement").val();
@@ -211,21 +302,11 @@
             var uiElementSelect = $("#node-input-uielement");
             uiElementSelect.on("change", function () {
                 updateUiElement();
-
-                var uiElement = uiElementSelect.val();
-                if (uiElement === "Base.heatingIsStateSliderMode" || uiElement === "Base.heatingIsStateSliderModeWindowHandle") {
-                    $('#node-input-stepsize-container').show();
-                }
-                else {
-                    $('#node-input-stepsize-container').hide();
-                }
             });
             //}}}
 
             //{{{ Fill ui elements - this needs to be done here and not in HTML so the label is loaded before initializing select2.
-            uiElementSelect.append($("<option />").val("Base.heatingIsStateSliderMode").text(RED._("ui/ui-hvac:ui-hvac.label.heatingSliderMode")));
-            uiElementSelect.append($("<option />").val("Base.heatingIsStateSliderModeWindowHandle").text(RED._("ui/ui-hvac:ui-hvac.label.heatingSliderModeWindow")));
-            uiElementSelect.append($("<option />").val("Base.ventilationMode").text(RED._("ui/ui-hvac:ui-hvac.label.ventilationMode")));
+            uiElementSelect.append($("<option />").val("Base.genericSlider").text(RED._("ui/ui-slider:ui-slider.label.genericSlider")));
             uiElementSelect.val(node.uielement);
             //}}}
 
@@ -233,17 +314,24 @@
             $('.node-input-select2').select2();
             $('.node-input-select2-nosearch').select2({minimumResultsForSearch: Infinity});
         },
-        oneditsave: function() {
+        oneditsave: function () {
             var node = this;
 
             var uiElement = $("#node-input-uielement").val();
             node.uiElementLabel = $("#node-input-uielement option:selected").text();
+            var icon = $('#node-input-uielementicon').val();
             var room = $("#node-input-room").val();
             var label = $("#node-input-label").val();
             var stepSize = $("#node-input-stepsize").val();
+            var unit = $("#node-input-unit").val();
 
-            if (uiElement !== node.uielement || room !== node.room || label !== node.label || stepSize != node.stepsize) {
-                node.dynamicMetadata = {"stepSize": parseFloat(stepSize)};
+            if (uiElement !== node.uielement || room !== node.room || icon !== node.uielementicon || label !== node.label || stepSize !== node.stepsize || unit !== this.unit) {
+                node.inputRendering[0][0].definitions.icons.state.name = icon;
+                node.inputRendering[0][1].definitions.icons.state.name = icon;
+                var precision = 0;
+                var stepSizeNumber = parseFloat(stepSize);
+                if (stepSizeNumber !== 0 && stepSizeNumber !== Math.floor(stepSizeNumber)) precision = stepSizeNumber.toString().split(".")[1].length || 0;
+                node.dynamicMetadata = {"stepSize": stepSizeNumber, "precision": precision};
 
                 //Something changed
                 RED.comms.homegear().invoke('setNodeVariable', null, node.id, "recreate", true);

@@ -14,6 +14,10 @@ add_library(homegear_nodes_ui
         ui/hvac/Factory.h
         ui/hvac/Hvac.cpp
         ui/hvac/Hvac.h
+        ui/slider/Factory.cpp
+        ui/slider/Factory.h
+        ui/slider/Slider.cpp
+        ui/slider/Slider.h
         ui/socket/Factory.cpp
         ui/socket/Factory.h
         ui/socket/Socket.cpp

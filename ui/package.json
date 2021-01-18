@@ -12,6 +12,7 @@
     "maxThreadCounts": {
       "ui-door": 0,
       "ui-hvac": 0,
+      "ui-slider": 0,
       "ui-socket": 0,
       "ui-status": 0,
       "ui-switch": 0,
@@ -20,6 +21,7 @@
     "nodes": {
       "ui-door": "ui-door.so",
       "ui-hvac": "ui-hvac.so",
+      "ui-slider": "ui-slider.so",
       "ui-socket": "ui-socket.so",
       "ui-status": "ui-status.so",
       "ui-switch": "ui-switch.so",

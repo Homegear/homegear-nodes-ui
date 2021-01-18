@@ -6,13 +6,16 @@ LIBS += -Wl,-Bdynamic -lhomegear-node
 
 libdir = $(localstatedir)/lib/homegear/node-blue/nodes/ui
 
-lib_LTLIBRARIES = ui-door.la ui-hvac.la ui-socket.la ui-status.la ui-switch.la ui-window.la
+lib_LTLIBRARIES = ui-door.la ui-hvac.la ui-slider.la ui-socket.la ui-status.la ui-switch.la ui-window.la
 
 ui_door_la_SOURCES = base/UiBase.cpp door/Factory.cpp door/Door.cpp
 ui_door_la_LDFLAGS = -module -avoid-version -shared
 
 ui_hvac_la_SOURCES = base/UiBase.cpp hvac/Factory.cpp hvac/Hvac.cpp
 ui_hvac_la_LDFLAGS = -module -avoid-version -shared
+
+ui_slider_la_SOURCES = base/UiBase.cpp slider/Factory.cpp slider/Slider.cpp
+ui_slider_la_LDFLAGS = -module -avoid-version -shared
 
 ui_socket_la_SOURCES = base/UiBase.cpp socket/Factory.cpp socket/Socket.cpp
 ui_socket_la_LDFLAGS = -module -avoid-version -shared
@@ -27,7 +30,7 @@ ui_window_la_SOURCES = base/UiBase.cpp window/Factory.cpp window/Window.cpp
 ui_window_la_LDFLAGS = -module -avoid-version -shared
 
 ui_ladir = $(libdir)
-ui_la_DATA = package.json door/ui-door.html hvac/ui-hvac.html socket/ui-socket.html status/ui-status.html switch/ui-switch.html window/ui-window.html
+ui_la_DATA = package.json door/ui-door.html hvac/ui-hvac.html slider/ui-slider.html socket/ui-socket.html status/ui-status.html switch/ui-switch.html window/ui-window.html
 
 locale_endir = $(libdir)/locales/en
 locale_en_DATA = locales/en-US/ui.json
@@ -44,6 +47,7 @@ locale_de_de_DATA = locales/de-DE/ui.json
 install-exec-hook:
 	rm -f $(DESTDIR)$(libdir)/ui-door.la
 	rm -f $(DESTDIR)$(libdir)/ui-hvac.la
+	rm -f $(DESTDIR)$(libdir)/ui-slider.la
 	rm -f $(DESTDIR)$(libdir)/ui-socket.la
 	rm -f $(DESTDIR)$(libdir)/ui-status.la
 	rm -f $(DESTDIR)$(libdir)/ui-switch.la
