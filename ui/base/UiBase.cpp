@@ -316,6 +316,8 @@ void UiBase::variableEvent(const std::string &source, uint64_t peerId, int32_t c
 
 void UiBase::input(const Flows::PNodeInfo &info, uint32_t index, const Flows::PVariable &message) {
   try {
+    if (index >= _variableInputIndexByNodeInputIndex.size()) return;
+
     auto parameters = std::make_shared<Flows::Array>();
     parameters->reserve(5);
     parameters->emplace_back(std::make_shared<Flows::Variable>("nodeBlue"));

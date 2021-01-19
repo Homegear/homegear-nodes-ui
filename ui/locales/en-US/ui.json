@@ -52,6 +52,22 @@
     "paletteHelp": "<p>Visualizes lights in Homegear's UI.</p>",
     "help": "<p>This node visualizes lights in Homegear's UI.</p>"
   },
+  "ui-shading": {
+    "label": {
+      "light": "shading",
+      "shadingButtonsPosition": "Blind",
+      "shadingButtonsPositionWindalarm": "Blind with wind alarm",
+      "shadingButtonsPositionVentilationWindalarm": "Blind with ventilation and wind alarm",
+      "shadingButtonsPositionPositionSlats": "Blind with slats",
+      "shadingButtonsSingleStepPositionPositionSlatsWindalarm": "Blind with slats and wind alarm",
+      "shadingAwningButtonsPosition": "Awning",
+      "shadingAwningButtonsPositionRainalarm": "Awning with rain alarm",
+      "shadingAwningButtonsPositionWindalarm": "Awning with wind alarm",
+      "shadingAwningButtonsPositionWindalarmRainalarm": "Awning with rain and wind alarm"
+    },
+    "paletteHelp": "<p>Visualizes blinds and awnings in Homegear's UI.</p>",
+    "help": "<p>This node visualizes blinds and awnings in Homegear's UI.</p>"
+  },
   "ui-slider": {
     "label": {
       "slider": "slider",

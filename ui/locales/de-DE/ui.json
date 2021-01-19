@@ -52,6 +52,22 @@
     "paletteHelp": "<p>Visualisiert Leuchten in Homegears UI.</p>",
     "help": "<p>Dieser Knoten visualisiert Leuchten in Homegears UI.</p>"
   },
+  "ui-shading": {
+    "label": {
+      "shading": "Beschattung",
+      "shadingButtonsPosition": "Rollladen",
+      "shadingButtonsPositionWindalarm": "Rollladen mit Windalarm",
+      "shadingButtonsPositionVentilationWindalarm": "Rollladen mit Lüftung und Windalarm",
+      "shadingButtonsPositionPositionSlats": "Jalousie",
+      "shadingButtonsSingleStepPositionPositionSlatsWindalarm": "Jalousie mit Windalarm",
+      "shadingAwningButtonsPosition": "Markise",
+      "shadingAwningButtonsPositionRainalarm": "Markise mit Regenalarm",
+      "shadingAwningButtonsPositionWindalarm": "Markise mit Windalarm",
+      "shadingAwningButtonsPositionWindalarmRainalarm": "Markise mit Regen- und Windalarm"
+    },
+    "paletteHelp": "<p>Visualisiert Beschattungen in Homegears UI.</p>",
+    "help": "<p>Dieser Knoten visualisiert Beschattungen in Homegears UI.</p>"
+  },
   "ui-slider": {
     "label": {
       "slider": "Schieberegler",

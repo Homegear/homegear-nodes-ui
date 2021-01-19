@@ -1,4 +1,4 @@
-<script type="text/x-red" data-template-name="ui-button">
+<script type="text/x-red" data-template-name="ui-shading">
     <div class="form-row">
         <label style="width: 130px;" for="node-input-name"><i class="fa fa-tag"></i> <span data-i18n="ui/ui-common:ui-common.label.name"></span></label>
         <input style="width: 65%;" type="text" id="node-input-name" data-i18n="[placeholder]ui/ui-common:ui-common.label.name">
@@ -17,90 +17,36 @@
         </select>
     </div>
     <div class="form-row">
-        <label style="width: 130px;" for="node-input-uielementicon"><i class="fa fa-picture-o"></i> <span data-i18n="ui/ui-common:ui-common.label.icon"></span></label>
-        <input type="hidden" id="node-input-uielementicon">
-    </div>
-    <div class="form-row">
         <label style="width: 130px;" for="node-input-label"><i class="fa fa-tag"></i> <span data-i18n="ui/ui-common:ui-common.label.label"></span></label>
         <input style="width: 65%;" type="text" id="node-input-label" data-i18n="[placeholder]ui/ui-common:ui-common.label.label">
     </div>
-    <div class="form-row">
-        <label style="width: 130px;" for="node-input-onlabel"><i class="fa fa-tag"></i> <span data-i18n="ui/ui-button:ui-button.label.onlabel"></span></label>
-        <input style="width: 65%;" type="text" id="node-input-onlabel" data-i18n="[placeholder]ui/ui-button:ui-button.label.onlabel">
+    <div id="node-input-stepsize-container" class="form-row hide">
+        <label style="width: 130px;" for="node-input-stepsize"><i class="fa fa-tag"></i> <span data-i18n="ui/ui-shading:ui-shading.label.stepsize"></span></label>
+        <input style="width: 65%;" type="text" id="node-input-stepsize" data-i18n="[placeholder]ui/ui-shading:ui-shading.label.stepsize">
     </div>
-    <div class="form-row">
-        <label style="width: 130px;" for="node-input-offlabel"><i class="fa fa-tag"></i> <span data-i18n="ui/ui-button:ui-button.label.offlabel"></span></label>
-        <input style="width: 65%;" type="text" id="node-input-offlabel" data-i18n="[placeholder]ui/ui-button:ui-button.label.offlabel">
-    </div>
-
-
-
 </script>
 <script type="text/javascript">
-    RED.nodes.registerType('ui-button', {
+    RED.nodes.registerType('ui-shading', {
         category: 'homegear ui',
         color: "#191b1f",
         defaults: {
             uielement: {
-                value: "Base.genericButton", validate: function (v) {
+                value: "", validate: function (v) {
                     return v != "";
                 }
             },
-            uielementicon: {value: ""},
             uiElementLabel: {value: ""},
             name: {value: ""},
-            room: {value: "", required: true},
-            label: {value: "", required: true},
-            onlabel: {value: RED._("ui/ui-button:ui-button.label.on"), required: true},
-            offlabel: {value: RED._("ui/ui-button:ui-button.label.off"), required: true},
+            room: {value: "", required:true},
+            label: {value: "", required:true},
             inputs: {value: 0},
             outputs: {value: 0},
+            stepsize: {value: 0.5, validate: function(v) { return $.isNumeric(v); }},
+            dynamicMetadata: {value: {}},
             inputIndexes: {value: []},
             inputLabels2: {value: []},
             inputDescriptions: {value: []},
             inputTypes: {value: []},
-            inputRendering: {
-                value: [[{
-                    "condition": {
-                        "operator": "e",
-                        "value": "0"
-                    },
-                    "definitions": {
-                        "icons": {
-                            "state": {
-                                "color": "inactive",
-                                "name": "power_1"
-                            }
-                        },
-                        "texts": {
-                            "state": {
-                                "color": "inactive",
-                                "content": "off"
-                            }
-                        }
-                    }
-                }, {
-                    "condition": {
-                        "operator": "not",
-                        "value": "0"
-                    },
-                    "definitions": {
-                        "icons": {
-                            "state": {
-                                "color": "active",
-                                "name": "power_1"
-                            }
-                        },
-                        "texts": {
-                            "state": {
-                                "color": "active",
-                                "content": "on"
-                            }
-                        }
-                    }
-                }
-                ]]
-            },
             outputIndexes: {value: []},
             outputLabels2: {value: []},
             outputDescriptions: {value: []},
@@ -130,59 +76,18 @@
                 description: description
             }
         },
-        icon: "font-awesome/fa-hand-o-up",
+        icon: "font-awesome/fa-cloud",
         paletteLabel: function () {
-            return RED._("ui/ui-button:ui-button.label.button");
+            return RED._("ui/ui-shading:ui-shading.label.shading");
         },
         label: function () {
-            return this.name || this.uiElementLabel || RED._("ui/ui-button:ui-button.label.button");
+            return this.name || this.uiElementLabel || RED._("ui/ui-shading:ui-shading.label.shading");
         },
         labelStyle: function () {
             return "red-ui-flow-node-label-white";
         },
         oneditprepare: function () {
             var node = this;
-
-            //{{{ Setup icon select
-            var iconInput = $('#node-input-uielementicon');
-
-            var iconButton = $('<button type="button" class="red-ui-button red-ui-editor-node-appearance-button">').appendTo(iconInput.parent());
-            $('<i class="fa fa-caret-down"></i>').appendTo(iconButton);
-            var nodeDiv = $('<div>', {class: "red-ui-search-result-node"}).appendTo(iconButton);
-            var colour = RED.utils.getNodeColor(node.type, node._def);
-            var icon_url = RED.nodes.homegearUiIcons.getIconUrl(node.uielementicon);
-            nodeDiv.css('backgroundColor', colour);
-            var borderColor = RED.utils.getDarkerColor(colour);
-            if (borderColor !== colour) {
-                nodeDiv.css('border-color', borderColor)
-            }
-
-            var iconContainer = $('<div/>', {class: "red-ui-palette-icon-container"}).appendTo(nodeDiv);
-            if (icon_url) RED.utils.createIconElement(icon_url, iconContainer, true);
-
-            iconButton.on("click", function (e) {
-                e.preventDefault();
-                var iconPath;
-                var icon = $("#node-input-uielementicon").val() || "";
-                if (icon) {
-                    iconPath = RED.utils.separateIconPath(icon);
-                } else {
-                    iconPath = RED.utils.getDefaultNodeIcon(node._def, node);
-                }
-                var backgroundColor = "#000";
-                RED.editor.showIconPicker(iconButton, backgroundColor, iconPath, false, function (newIcon) {
-                    if (newIcon) newIcon = newIcon.split("/")[1];
-                    $("#node-input-uielementicon").val(newIcon || "");
-                    var icon_url = RED.nodes.homegearUiIcons.getIconUrl(newIcon);
-                    RED.utils.createIconElement(icon_url, iconContainer, true);
-                }, true);
-            });
-            RED.popover.tooltip(iconButton, function () {
-                return $("#node-input-uielementicon").val();
-            });
-            iconInput.val(node.uielementicon);
-
-            //}}}
 
             function updateUiElement() {
                 var uiElement = $("#node-input-uielement").val();
@@ -306,11 +211,27 @@
             var uiElementSelect = $("#node-input-uielement");
             uiElementSelect.on("change", function () {
                 updateUiElement();
+
+                var uiElement = uiElementSelect.val();
+                if (uiElement === "Base.heatingIsStateSliderMode" || uiElement === "Base.heatingIsStateSliderModeWindowHandle") {
+                    $('#node-input-stepsize-container').show();
+                }
+                else {
+                    $('#node-input-stepsize-container').hide();
+                }
             });
             //}}}
 
             //{{{ Fill ui elements - this needs to be done here and not in HTML so the label is loaded before initializing select2.
-            uiElementSelect.append($("<option />").val("Base.genericButton").text(RED._("ui/ui-button:ui-button.label.genericButton")));
+            uiElementSelect.append($("<option />").val("Base.shadingButtonsPosition").text(RED._("ui/ui-shading:ui-shading.label.shadingButtonsPosition")));
+            uiElementSelect.append($("<option />").val("Base.shadingButtonsPositionVentilationWindalarm").text(RED._("ui/ui-shading:ui-shading.label.shadingButtonsPositionVentilationWindalarm")));
+            uiElementSelect.append($("<option />").val("Base.shadingButtonsPositionWindalarm").text(RED._("ui/ui-shading:ui-shading.label.shadingButtonsPositionWindalarm")));
+            uiElementSelect.append($("<option />").val("Base.shadingButtonsPositionPositionSlats").text(RED._("ui/ui-shading:ui-shading.label.shadingButtonsPositionPositionSlats")));
+            uiElementSelect.append($("<option />").val("Base.shadingButtonsSingleStepPositionPositionSlatsWindalarm").text(RED._("ui/ui-shading:ui-shading.label.shadingButtonsSingleStepPositionPositionSlatsWindalarm")));
+            uiElementSelect.append($("<option />").val("Base.shadingAwningButtonsPosition").text(RED._("ui/ui-shading:ui-shading.label.shadingAwningButtonsPosition")));
+            uiElementSelect.append($("<option />").val("Base.shadingAwningButtonsPositionRainalarm").text(RED._("ui/ui-shading:ui-shading.label.shadingAwningButtonsPositionRainalarm")));
+            uiElementSelect.append($("<option />").val("Base.shadingAwningButtonsPositionWindalarm").text(RED._("ui/ui-shading:ui-shading.label.shadingAwningButtonsPositionWindalarm")));
+            uiElementSelect.append($("<option />").val("Base.shadingAwningButtonsPositionWindalarmRainalarm").text(RED._("ui/ui-shading:ui-shading.label.shadingAwningButtonsPositionWindalarmRainalarm")));
             uiElementSelect.val(node.uielement);
             //}}}
 
@@ -318,22 +239,17 @@
             $('.node-input-select2').select2();
             $('.node-input-select2-nosearch').select2({minimumResultsForSearch: Infinity});
         },
-        oneditsave: function () {
+        oneditsave: function() {
             var node = this;
 
             var uiElement = $("#node-input-uielement").val();
             node.uiElementLabel = $("#node-input-uielement option:selected").text();
-            var icon = $('#node-input-uielementicon').val();
             var room = $("#node-input-room").val();
             var label = $("#node-input-label").val();
-            var onlabel = $("#node-input-onlabel").val();
-            var offlabel = $("#node-input-offlabel").val();
+            var stepSize = $("#node-input-stepsize").val();
 
-            if (uiElement !== node.uielement || room !== node.room || icon !== node.uielementicon || label !== node.label || onlabel !== node.onlabel || offlabel !== node.offlabel) {
-                node.inputRendering[0][0].definitions.icons.state.name = icon;
-                node.inputRendering[0][1].definitions.icons.state.name = icon;
-                node.inputRendering[0][0].definitions.texts.state.content = offlabel;
-                node.inputRendering[0][1].definitions.texts.state.content = onlabel;
+            if (uiElement !== node.uielement || room !== node.room || label !== node.label || stepSize != node.stepsize) {
+                node.dynamicMetadata = {"stepSize": parseFloat(stepSize)};
 
                 //Something changed
                 RED.comms.homegear().invoke('setNodeVariable', null, node.id, "recreate", true);

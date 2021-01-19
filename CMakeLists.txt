@@ -22,6 +22,10 @@ add_library(homegear_nodes_ui
         ui/light/Factory.h
         ui/light/Light.cpp
         ui/light/Light.h
+        ui/shading/Factory.cpp
+        ui/shading/Factory.h
+        ui/shading/Shading.cpp
+        ui/shading/Shading.h
         ui/slider/Factory.cpp
         ui/slider/Factory.h
         ui/slider/Slider.cpp
