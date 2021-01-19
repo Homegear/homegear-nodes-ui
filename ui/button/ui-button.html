@@ -1,0 +1,343 @@
+<script type="text/x-red" data-template-name="ui-button">
+    <div class="form-row">
+        <label style="width: 130px;" for="node-input-name"><i class="fa fa-tag"></i> <span data-i18n="ui/ui-common:ui-common.label.name"></span></label>
+        <input style="width: 65%;" type="text" id="node-input-name" data-i18n="[placeholder]ui/ui-common:ui-common.label.name">
+    </div>
+    <div class="form-row">
+        <label style="width: 130px;" for="node-input-uielement"><i class="fa fa-random"></i> <span data-i18n="ui/ui-common:ui-common.label.uielement"></span></label>
+        <select type="text" id="node-input-uielement" class="node-input-select2" style="display: inline-block; width: 65%;">
+        </select>
+    </div>
+    <div class="form-row">
+        <div style="margin-left: 135px" id="node-uielement-description"></div>
+    </div>
+    <div class="form-row">
+        <label style="width: 130px;" for="node-input-room"><i class="fa fa-home"></i> <span data-i18n="ui/ui-common:ui-common.label.room"></span></label>
+        <select type="text" id="node-input-room" style="display: inline-block; width: 65%;">
+        </select>
+    </div>
+    <div class="form-row">
+        <label style="width: 130px;" for="node-input-uielementicon"><i class="fa fa-picture-o"></i> <span data-i18n="ui/ui-common:ui-common.label.icon"></span></label>
+        <input type="hidden" id="node-input-uielementicon">
+    </div>
+    <div class="form-row">
+        <label style="width: 130px;" for="node-input-label"><i class="fa fa-tag"></i> <span data-i18n="ui/ui-common:ui-common.label.label"></span></label>
+        <input style="width: 65%;" type="text" id="node-input-label" data-i18n="[placeholder]ui/ui-common:ui-common.label.label">
+    </div>
+    <div class="form-row">
+        <label style="width: 130px;" for="node-input-onlabel"><i class="fa fa-tag"></i> <span data-i18n="ui/ui-button:ui-button.label.onlabel"></span></label>
+        <input style="width: 65%;" type="text" id="node-input-onlabel" data-i18n="[placeholder]ui/ui-button:ui-button.label.onlabel">
+    </div>
+    <div class="form-row">
+        <label style="width: 130px;" for="node-input-offlabel"><i class="fa fa-tag"></i> <span data-i18n="ui/ui-button:ui-button.label.offlabel"></span></label>
+        <input style="width: 65%;" type="text" id="node-input-offlabel" data-i18n="[placeholder]ui/ui-button:ui-button.label.offlabel">
+    </div>
+
+
+
+</script>
+<script type="text/javascript">
+    RED.nodes.registerType('ui-button', {
+        category: 'homegear ui',
+        color: "#191b1f",
+        defaults: {
+            uielement: {
+                value: "Base.genericButton", validate: function (v) {
+                    return v != "";
+                }
+            },
+            uielementicon: {value: ""},
+            uiElementLabel: {value: ""},
+            name: {value: ""},
+            room: {value: "", required: true},
+            label: {value: "", required: true},
+            onlabel: {value: RED._("ui/ui-button:ui-button.label.on"), required: true},
+            offlabel: {value: RED._("ui/ui-button:ui-button.label.off"), required: true},
+            inputs: {value: 0},
+            outputs: {value: 0},
+            inputIndexes: {value: []},
+            inputLabels2: {value: []},
+            inputDescriptions: {value: []},
+            inputTypes: {value: []},
+            inputRendering: {
+                value: [[{
+                    "condition": {
+                        "operator": "e",
+                        "value": "0"
+                    },
+                    "definitions": {
+                        "icons": {
+                            "state": {
+                                "color": "inactive",
+                                "name": "power_1"
+                            }
+                        },
+                        "texts": {
+                            "state": {
+                                "color": "inactive",
+                                "content": "off"
+                            }
+                        }
+                    }
+                }, {
+                    "condition": {
+                        "operator": "not",
+                        "value": "0"
+                    },
+                    "definitions": {
+                        "icons": {
+                            "state": {
+                                "color": "active",
+                                "name": "power_1"
+                            }
+                        },
+                        "texts": {
+                            "state": {
+                                "color": "active",
+                                "content": "on"
+                            }
+                        }
+                    }
+                }
+                ]]
+            },
+            outputIndexes: {value: []},
+            outputLabels2: {value: []},
+            outputDescriptions: {value: []},
+            outputTypes: {value: []}
+        },
+        inputs: 0,
+        inputInfo: function (i) {
+            var types = (this.inputTypes && this.inputTypes.hasOwnProperty(i) && this.inputTypes[i].split(",")) || ["any"];
+            var label = (this.inputLabels2 && this.inputLabels2[i]) || i + "";
+            var description = (this.inputDescriptions && this.inputDescriptions[i]) || "";
+
+            return {
+                types: types,
+                label: label,
+                description: description
+            }
+        },
+        outputs: 0,
+        outputInfo: function (i) {
+            var types = (this.outputTypes && this.outputTypes.hasOwnProperty(i) && this.outputTypes[i].split(",")) || ["any"];
+            var label = (this.outputLabels2 && this.outputLabels2[i]) || i + "";
+            var description = (this.outputDescriptions && this.outputDescriptions[i]) || "";
+
+            return {
+                types: types,
+                label: label,
+                description: description
+            }
+        },
+        icon: "font-awesome/fa-toggle-on",
+        paletteLabel: function () {
+            return RED._("ui/ui-button:ui-button.label.button");
+        },
+        label: function () {
+            return this.name || this.uiElementLabel || RED._("ui/ui-button:ui-button.label.button");
+        },
+        labelStyle: function () {
+            return "red-ui-flow-node-label-white";
+        },
+        oneditprepare: function () {
+            var node = this;
+
+            //{{{ Setup icon select
+            var iconInput = $('#node-input-uielementicon');
+
+            var iconButton = $('<button type="button" class="red-ui-button red-ui-editor-node-appearance-button">').appendTo(iconInput.parent());
+            $('<i class="fa fa-caret-down"></i>').appendTo(iconButton);
+            var nodeDiv = $('<div>', {class: "red-ui-search-result-node"}).appendTo(iconButton);
+            var colour = RED.utils.getNodeColor(node.type, node._def);
+            var icon_url = RED.nodes.homegearUiIcons.getIconUrl(node.uielementicon);
+            nodeDiv.css('backgroundColor', colour);
+            var borderColor = RED.utils.getDarkerColor(colour);
+            if (borderColor !== colour) {
+                nodeDiv.css('border-color', borderColor)
+            }
+
+            var iconContainer = $('<div/>', {class: "red-ui-palette-icon-container"}).appendTo(nodeDiv);
+            if (icon_url) RED.utils.createIconElement(icon_url, iconContainer, true);
+
+            iconButton.on("click", function (e) {
+                e.preventDefault();
+                var iconPath;
+                var icon = $("#node-input-uielementicon").val() || "";
+                if (icon) {
+                    iconPath = RED.utils.separateIconPath(icon);
+                } else {
+                    iconPath = RED.utils.getDefaultNodeIcon(node._def, node);
+                }
+                var backgroundColor = "#000";
+                RED.editor.showIconPicker(iconButton, backgroundColor, iconPath, false, function (newIcon) {
+                    if (newIcon) newIcon = newIcon.split("/")[1];
+                    $("#node-input-uielementicon").val(newIcon || "");
+                    var icon_url = RED.nodes.homegearUiIcons.getIconUrl(newIcon);
+                    RED.utils.createIconElement(icon_url, iconContainer, true);
+                }, true);
+            });
+            RED.popover.tooltip(iconButton, function () {
+                return $("#node-input-uielementicon").val();
+            });
+            iconInput.val(node.uielementicon);
+
+            //}}}
+
+            function updateUiElement() {
+                var uiElement = $("#node-input-uielement").val();
+                if (!uiElement) return;
+
+                //{{{ Get rooms
+                RED.comms.homegear().invoke("getStories", function (message) {
+                    if (!message.hasOwnProperty("result")) return;
+
+                    var stories = message.result;
+                    RED.comms.homegear().invoke("getRooms", function (message) {
+                        if (!message.hasOwnProperty("result")) return;
+
+                        var rooms = message.result;
+                        var roomsById = [];
+                        for (let i = 0; i < rooms.length; i++) {
+                            roomsById[rooms[i].ID] = rooms[i].NAME;
+                        }
+                        var data = [];
+                        for (let i = 0; i < stories.length; i++) {
+                            if (stories[i].ROOMS.length === 0) continue;
+                            let storyGroup = {
+                                text: stories[i].NAME,
+                                children: []
+                            };
+                            for (let j = 0; j < stories[i].ROOMS.length; j++) {
+                                storyGroup.children.push({
+                                    id: stories[i].ROOMS[j],
+                                    text: roomsById[stories[i].ROOMS[j]]
+                                });
+                            }
+                            data.push(storyGroup);
+                        }
+
+                        $("#node-input-room").select2({data: data});
+                        $("#node-input-room").val(node.room).trigger('change');
+
+                    }, RED.i18n.lang());
+                }, RED.i18n.lang());
+                //}}}
+
+                //{{{ Get info about currently selected UI element
+                RED.comms.homegear().invoke("getUiElementTemplate", function (message) {
+                    if (!message.hasOwnProperty("result")) return;
+
+                    node.inputs = 0;
+                    node.outputs = 0;
+                    node.inputIndexes = [];
+                    node.inputLabels2 = [];
+                    node.inputDescriptions = [];
+                    node.inputTypes = [];
+                    node.outputIndexes = [];
+                    node.outputLabels2 = [];
+                    node.outputDescriptions = [];
+                    node.outputTypes = [];
+
+                    if (message.result.hasOwnProperty("description")) {
+                        $("#node-uielement-description").html(message.result.description);
+                    } else $("#node-uielement-description").html("");
+
+                    if (message.result.type === "simple") {
+                        if (message.result.hasOwnProperty("variableInputs")) {
+                            for (let i = 0; i < message.result.variableInputs.length; i++) {
+                                let variableInput = message.result.variableInputs[i];
+                                if (!variableInput.properties.hasOwnProperty("label") || variableInput.properties.label === "" || variableInput.properties.label === "-") {
+                                    continue;
+                                }
+                                node.inputIndexes[node.inputs] = [0, i];
+                                node.inputLabels2[node.inputs] = variableInput.properties.label;
+                                if (variableInput.properties.hasOwnProperty("description")) node.inputDescriptions[node.inputs] = variableInput.properties.description;
+                                if (variableInput.properties.hasOwnProperty("types")) node.inputTypes[node.inputs] = variableInput.properties.types; else node.inputTypes[node.inputs] = '';
+                                node.inputs++;
+                            }
+                        }
+                        if (message.result.hasOwnProperty("variableOutputs")) {
+                            for (let i = 0; i < message.result.variableOutputs.length; i++) {
+                                let variableOutput = message.result.variableOutputs[node.outputs];
+                                if (!variableOutput.properties.hasOwnProperty("label") || variableOutput.properties.label === "" || variableOutput.properties.label === "-") {
+                                    continue;
+                                }
+                                node.outputIndexes[node.outputs] = [0, i];
+                                node.outputLabels2[node.outputs] = variableOutput.properties.label;
+                                if (variableOutput.properties.hasOwnProperty("description")) node.outputDescriptions[node.outputs] = variableOutput.properties.description;
+                                if (variableOutput.properties.hasOwnProperty("types")) node.outputTypes[node.outputs] = variableOutput.properties.types; else node.outputTypes[node.outputs] = '';
+                                node.outputs++;
+                            }
+                        }
+                    } else {
+                        for (let control = 0; control < message.result.controls.length; control++) {
+                            if (message.result.controls[control].hasOwnProperty("variableInputs")) {
+                                for (let i = 0; i < message.result.controls[control].variableInputs.length; i++) {
+                                    let variableInput = message.result.controls[control].variableInputs[i];
+                                    if (!variableInput.properties.hasOwnProperty("label") || variableInput.properties.label === "" || variableInput.properties.label === "-") {
+                                        continue;
+                                    }
+                                    node.inputIndexes[node.inputs] = [control, i];
+                                    node.inputLabels2[node.inputs] = variableInput.properties.label;
+                                    if (variableInput.properties.hasOwnProperty("description")) node.inputDescriptions[node.inputs] = variableInput.properties.description;
+                                    if (variableInput.properties.hasOwnProperty("types")) node.inputTypes[node.inputs] = variableInput.properties.types; else node.inputTypes[node.inputs] = '';
+                                    node.inputs++;
+                                }
+                            }
+                            if (message.result.controls[control].hasOwnProperty("variableOutputs")) {
+                                for (let i = 0; i < message.result.controls[control].variableOutputs.length; i++) {
+                                    let variableOutput = message.result.controls[control].variableOutputs[i];
+                                    if (!variableOutput.properties.hasOwnProperty("label") || variableOutput.properties.label === "" || variableOutput.properties.label === "-") {
+                                        continue;
+                                    }
+                                    node.outputIndexes[node.outputs] = [control, i];
+                                    node.outputLabels2[node.outputs] = variableOutput.properties.label;
+                                    if (variableOutput.properties.hasOwnProperty("description")) node.outputDescriptions[node.outputs] = variableOutput.properties.description;
+                                    if (variableOutput.properties.hasOwnProperty("types")) node.outputTypes[node.outputs] = variableOutput.properties.types; else node.outputTypes[node.outputs] = '';
+                                    node.outputs++;
+                                }
+                            }
+                        }
+                    }
+                }, uiElement, RED.i18n.lang());
+            }
+
+            var uiElementSelect = $("#node-input-uielement");
+            uiElementSelect.on("change", function () {
+                updateUiElement();
+            });
+            //}}}
+
+            //{{{ Fill ui elements - this needs to be done here and not in HTML so the label is loaded before initializing select2.
+            uiElementSelect.append($("<option />").val("Base.genericButton").text(RED._("ui/ui-button:ui-button.label.genericButton")));
+            uiElementSelect.val(node.uielement);
+            //}}}
+
+            //Initialize select2
+            $('.node-input-select2').select2();
+            $('.node-input-select2-nosearch').select2({minimumResultsForSearch: Infinity});
+        },
+        oneditsave: function () {
+            var node = this;
+
+            var uiElement = $("#node-input-uielement").val();
+            node.uiElementLabel = $("#node-input-uielement option:selected").text();
+            var icon = $('#node-input-uielementicon').val();
+            var room = $("#node-input-room").val();
+            var label = $("#node-input-label").val();
+            var onlabel = $("#node-input-onlabel").val();
+            var offlabel = $("#node-input-offlabel").val();
+
+            if (uiElement !== node.uielement || room !== node.room || icon !== node.uielementicon || label !== node.label || onlabel !== node.onlabel || offlabel !== node.offlabel) {
+                node.inputRendering[0][0].definitions.icons.state.name = icon;
+                node.inputRendering[0][1].definitions.icons.state.name = icon;
+                node.inputRendering[0][0].definitions.texts.state.content = offlabel;
+                node.inputRendering[0][1].definitions.texts.state.content = onlabel;
+
+                //Something changed
+                RED.comms.homegear().invoke('setNodeVariable', null, node.id, "recreate", true);
+            }
+        }
+    });
+</script>

@@ -10,6 +10,7 @@
   "node-blue": {
     "local": false,
     "maxThreadCounts": {
+      "ui-button": 0,
       "ui-door": 0,
       "ui-hvac": 0,
       "ui-light": 0,
@@ -20,6 +21,7 @@
       "ui-window": 0
     },
     "nodes": {
+      "ui-button": "ui-button.so",
       "ui-door": "ui-door.so",
       "ui-hvac": "ui-hvac.so",
       "ui-light": "ui-light.so",

@@ -8,6 +8,18 @@
       "icon": "Icon"
     }
   },
+  "ui-button": {
+    "label": {
+      "button": "button",
+      "genericButton": "Button",
+      "onlabel": "On label",
+      "offlabel": "Off label",
+      "on": "on",
+      "off": "off"
+    },
+    "paletteHelp": "<p>Visualizes a button in Homegear's UI.</p>",
+    "help": "<p>This node visualizes a button in Homegear's UI.</p>"
+  },
   "ui-door": {
     "label": {
       "door": "door",

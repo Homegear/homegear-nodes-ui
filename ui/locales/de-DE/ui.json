@@ -8,6 +8,18 @@
       "icon": "Icon"
     }
   },
+  "ui-button": {
+    "label": {
+      "switch": "Taster",
+      "genericSwitch": "Taster",
+      "onlabel": "An-Beschriftung",
+      "offlabel": "Aus-Beschriftung",
+      "on": "an",
+      "off": "aus"
+    },
+    "paletteHelp": "<p>Visualisiert einen Taster in Homegears UI.</p>",
+    "help": "<p>Dieser Knoten visualisiert einen Taster in Homegears UI.</p>"
+  },
   "ui-door": {
     "label": {
       "door": "Tür",

@@ -6,6 +6,10 @@ set(CMAKE_CXX_STANDARD 17)
 add_library(homegear_nodes_ui
         ui/base/UiBase.cpp
         ui/base/UiBase.h
+        ui/button/Factory.cpp
+        ui/button/Factory.h
+        ui/button/Button.cpp
+        ui/button/Button.h
         ui/door/Factory.cpp
         ui/door/Factory.h
         ui/door/Door.cpp
