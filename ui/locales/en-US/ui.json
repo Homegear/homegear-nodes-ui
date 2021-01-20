@@ -54,7 +54,7 @@
   },
   "ui-shading": {
     "label": {
-      "light": "shading",
+      "shading": "shading",
       "shadingButtonsPosition": "Blind",
       "shadingButtonsPositionWindalarm": "Blind with wind alarm",
       "shadingButtonsPositionVentilationWindalarm": "Blind with ventilation and wind alarm",
