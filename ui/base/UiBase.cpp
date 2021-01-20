@@ -90,6 +90,9 @@ bool UiBase::init(const Flows::PNodeInfo &info) {
     settingsIterator = info->info->structValue->find("maximumvalue");
     if (settingsIterator != info->info->structValue->end()) _maximumValue = Flows::Math::getDouble(settingsIterator->second->stringValue);
 
+    settingsIterator = info->info->structValue->find("passthrough-input");
+    if (settingsIterator != info->info->structValue->end()) _passThroughInput = settingsIterator->second->booleanValue;
+
     uint32_t outputs = 0;
     settingsIterator = info->info->structValue->find("outputs");
     if (settingsIterator != info->info->structValue->end()) outputs = settingsIterator->second->integerValue64;
@@ -330,6 +333,19 @@ void UiBase::input(const Flows::PNodeInfo &info, uint32_t index, const Flows::PV
     invoke("nodeBlueVariableEvent", parameters);
 
     setNodeData("i" + std::to_string(index), message->structValue->at("payload"));
+
+    if (_passThroughInput) {
+      if (index >= _variableInputIndexByNodeInputIndex.size()) return;
+      auto indexIterator1 = _nodeOutputIndexByVariableOutputIndex.find(_variableInputIndexByNodeInputIndex.at(index).first);
+      if (indexIterator1 == _nodeOutputIndexByVariableOutputIndex.end()) return;
+      auto indexIterator2 = indexIterator1->second.find(_variableInputIndexByNodeInputIndex.at(index).second);
+      if (indexIterator2 == indexIterator1->second.end()) return;
+      auto outputIndex = indexIterator2->second;
+
+      output(outputIndex, message);
+
+      setNodeData("o" + std::to_string(outputIndex), message->structValue->at("payload"));
+    }
   }
   catch (const std::exception &ex) {
     _out->printEx(__FILE__, __LINE__, __PRETTY_FUNCTION__, ex.what());

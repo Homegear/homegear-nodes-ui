@@ -5,7 +5,8 @@
       "room": "Raum",
       "label": "Beschriftung",
       "uielement": "UI-Element",
-      "icon": "Icon"
+      "icon": "Icon",
+      "passthrough-input": "Eingehende Nachricht an Ausgang durchreichen"
     }
   },
   "ui-button": {

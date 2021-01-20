@@ -32,9 +32,11 @@
         <label style="width: 130px;" for="node-input-offlabel"><i class="fa fa-tag"></i> <span data-i18n="ui/ui-switch:ui-switch.label.offlabel"></span></label>
         <input style="width: 65%;" type="text" id="node-input-offlabel" data-i18n="[placeholder]ui/ui-switch:ui-switch.label.offlabel">
     </div>
-
-
-
+    <div class="form-row">
+        <label style="width: 130px;">&nbsp;</label>
+        <input type="checkbox" id="node-input-passthrough-input" style="display: inline-block; width: auto; vertical-align: top;">
+        <label for="node-input-passthrough-input" style="width: 65%;" data-i18n="ui/ui-common:ui-common.label.passthrough-input"></label>
+    </div>
 </script>
 <script type="text/javascript">
     RED.nodes.registerType('ui-switch', {
@@ -104,7 +106,8 @@
             outputIndexes: {value: []},
             outputLabels2: {value: []},
             outputDescriptions: {value: []},
-            outputTypes: {value: []}
+            outputTypes: {value: []},
+            "passthrough-input": {value: false}
         },
         inputs: 0,
         inputInfo: function (i) {

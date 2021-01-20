@@ -40,6 +40,11 @@
         <label style="width: 130px;" for="node-input-stepsize"><i class="fa fa-arrows-h"></i> <span data-i18n="ui/ui-slider:ui-slider.label.stepsize"></span></label>
         <input style="width: 65%;" type="text" id="node-input-stepsize" data-i18n="[placeholder]ui/ui-slider:ui-slider.label.stepsize">
     </div>
+    <div class="form-row">
+        <label style="width: 130px;">&nbsp;</label>
+        <input type="checkbox" id="node-input-passthrough-input" style="display: inline-block; width: auto; vertical-align: top;">
+        <label for="node-input-passthrough-input" style="width: 65%;" data-i18n="ui/ui-common:ui-common.label.passthrough-input"></label>
+    </div>
 </script>
 <script type="text/javascript">
     RED.nodes.registerType('ui-slider', {
@@ -100,7 +105,8 @@
             outputIndexes: {value: []},
             outputLabels2: {value: []},
             outputDescriptions: {value: []},
-            outputTypes: {value: []}
+            outputTypes: {value: []},
+            "passthrough-input": {value: false}
         },
         inputs: 0,
         inputInfo: function (i) {

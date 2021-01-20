@@ -60,6 +60,7 @@ class UiBase : public Flows::INode {
   bool _rangeValuesSet = false;
   double _minimumValue = 0;
   double _maximumValue = 0;
+  bool _passThroughInput = false;
 
   void variableEvent(const std::string &source, uint64_t peerId, int32_t channel, const std::string &variable, const Flows::PVariable &value, const Flows::PVariable &metadata) override;
 

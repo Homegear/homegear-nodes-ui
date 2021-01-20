@@ -5,7 +5,8 @@
       "room": "Room",
       "label": "Label",
       "uielement": "UI element",
-      "icon": "Icon"
+      "icon": "Icon",
+      "passthrough-input": "Passthrough incoming message to output"
     }
   },
   "ui-button": {
