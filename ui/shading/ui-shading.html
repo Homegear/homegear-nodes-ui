@@ -248,7 +248,7 @@
             var label = $("#node-input-label").val();
             var stepSize = $("#node-input-stepsize").val();
 
-            if (uiElement !== node.uielement || room !== node.room || label !== node.label || stepSize != node.stepsize) {
+            if (uiElement !== node.uielement || room !== node.room || label !== node.label || stepSize !== node.stepsize) {
                 node.dynamicMetadata = {"stepSize": parseFloat(stepSize)};
 
                 //Something changed

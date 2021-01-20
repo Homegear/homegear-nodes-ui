@@ -24,6 +24,7 @@
         <label style="width: 130px;" for="node-input-stepsize"><i class="fa fa-tag"></i> <span data-i18n="ui/ui-hvac:ui-hvac.label.stepsize"></span></label>
         <input style="width: 65%;" type="text" id="node-input-stepsize" data-i18n="[placeholder]ui/ui-hvac:ui-hvac.label.stepsize">
     </div>
+
 </script>
 <script type="text/javascript">
     RED.nodes.registerType('ui-hvac', {
@@ -37,11 +38,15 @@
             },
             uiElementLabel: {value: ""},
             name: {value: ""},
-            room: {value: "", required:true},
-            label: {value: "", required:true},
+            room: {value: "", required: true},
+            label: {value: "", required: true},
             inputs: {value: 0},
             outputs: {value: 0},
-            stepsize: {value: 0.5, validate: function(v) { return $.isNumeric(v); }},
+            stepsize: {
+                value: 0.5, validate: function (v) {
+                    return $.isNumeric(v);
+                }
+            },
             dynamicMetadata: {value: {}},
             inputIndexes: {value: []},
             inputLabels2: {value: []},
@@ -213,18 +218,17 @@
                 updateUiElement();
 
                 var uiElement = uiElementSelect.val();
-                if (uiElement === "Base.heatingIsStateSliderMode" || uiElement === "Base.heatingIsStateSliderModeWindowHandle") {
+                if (uiElement === "Base.heatingSliderMode" || uiElement === "Base.heatingSliderModeWindowhandle") {
                     $('#node-input-stepsize-container').show();
-                }
-                else {
+                } else {
                     $('#node-input-stepsize-container').hide();
                 }
             });
             //}}}
 
             //{{{ Fill ui elements - this needs to be done here and not in HTML so the label is loaded before initializing select2.
-            uiElementSelect.append($("<option />").val("Base.heatingIsStateSliderMode").text(RED._("ui/ui-hvac:ui-hvac.label.heatingSliderMode")));
-            uiElementSelect.append($("<option />").val("Base.heatingIsStateSliderModeWindowHandle").text(RED._("ui/ui-hvac:ui-hvac.label.heatingSliderModeWindow")));
+            uiElementSelect.append($("<option />").val("Base.heatingSliderMode").text(RED._("ui/ui-hvac:ui-hvac.label.heatingSliderMode")));
+            uiElementSelect.append($("<option />").val("Base.heatingSliderModeWindowhandle").text(RED._("ui/ui-hvac:ui-hvac.label.heatingSliderModeWindow")));
             uiElementSelect.append($("<option />").val("Base.ventilationMode").text(RED._("ui/ui-hvac:ui-hvac.label.ventilationMode")));
             uiElementSelect.val(node.uielement);
             //}}}
@@ -233,7 +237,7 @@
             $('.node-input-select2').select2();
             $('.node-input-select2-nosearch').select2({minimumResultsForSearch: Infinity});
         },
-        oneditsave: function() {
+        oneditsave: function () {
             var node = this;
 
             var uiElement = $("#node-input-uielement").val();
