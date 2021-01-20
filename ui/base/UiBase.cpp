@@ -265,6 +265,8 @@ bool UiBase::start() {
     }
 
     setNodeData("recreate", std::make_shared<Flows::Variable>(false));
+    _created = recreate->type != Flows::VariableType::tBoolean;
+    _recreated = true;
     return true;
   } catch (const std::exception &ex) {
     _out->printEx(__FILE__, __LINE__, __PRETTY_FUNCTION__, ex.what());

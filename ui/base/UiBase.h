@@ -43,7 +43,9 @@ class UiBase : public Flows::INode {
   bool start() override;
 
   void setNodeVariable(const std::string &variable, const Flows::PVariable &value) override;
- private:
+ protected:
+  bool _created = false;
+  bool _recreated = false;
   std::vector<std::pair<uint32_t, uint32_t>> _variableInputIndexByNodeInputIndex;
   std::unordered_map<uint32_t, std::unordered_map<uint32_t, uint32_t>> _nodeInputIndexByVariableInputIndex;
   std::vector<std::pair<uint32_t, uint32_t>> _variableOutputIndexByNodeOutputIndex;

@@ -38,6 +38,8 @@ class Light : public UiBase {
  public:
   Light(const std::string &path, const std::string &type, const std::atomic_bool *frontendConnected);
   ~Light() override;
+
+  bool start() override;
  private:
 };
 

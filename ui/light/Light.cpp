@@ -36,4 +36,16 @@ Light::Light(const std::string &path, const std::string &type, const std::atomic
 
 Light::~Light() = default;
 
+bool Light::start() {
+  if (!UiBase::start()) return false;
+
+  if (_created && _uiElement == "Base.lightingSwitchColor") {
+    //Set a default state and color
+    setNodeData("i" + std::to_string(0), std::make_shared<Flows::Variable>(false));
+    setNodeData("i" + std::to_string(1), std::make_shared<Flows::Variable>("#FFFFFF"));
+  }
+
+  return true;
+}
+
 }
