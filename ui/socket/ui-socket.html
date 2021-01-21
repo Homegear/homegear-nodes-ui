@@ -32,7 +32,7 @@
         color: "#191b1f",
         defaults: {
             uielement: {
-                value: "", validate: function (v) {
+                value: "Base.socketSwitch", validate: function (v) {
                     return v != "";
                 }
             },
@@ -215,7 +215,6 @@
             //}}}
 
             //{{{ Fill ui elements - this needs to be done here and not in HTML so the label is loaded before initializing select2.
-            uiElementSelect.append($("<option />").val("Base.socketButton").text(RED._("ui/ui-socket:ui-socket.label.socketButton")));
             uiElementSelect.append($("<option />").val("Base.socketSwitch").text(RED._("ui/ui-socket:ui-socket.label.socketSwitch")));
             uiElementSelect.val(node.uielement);
             //}}}
