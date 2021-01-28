@@ -32,6 +32,8 @@
 
 #include <homegear-node/INode.h>
 
+#include <unordered_map>
+
 namespace Ui {
 
 class UiBase : public Flows::INode {
