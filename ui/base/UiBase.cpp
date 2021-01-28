@@ -116,8 +116,23 @@ bool UiBase::init(const Flows::PNodeInfo &info) {
 
 bool UiBase::start() {
   try {
+    auto uiElementId = (uint64_t)getNodeData("uiElementId")->integerValue64;
     auto recreate = getNodeData("recreate");
-    if (recreate->type == Flows::VariableType::tBoolean && !recreate->booleanValue) return true;
+
+    bool uiElementExists = false;
+
+    if (uiElementId != 0)
+    {
+      auto parameters = std::make_shared<Flows::Array>();
+      parameters->emplace_back(std::make_shared<Flows::Variable>(uiElementId));
+      uiElementExists = invoke("uiElementExists", parameters)->booleanValue;
+    }
+
+    if (uiElementExists && recreate->type == Flows::VariableType::tBoolean && !recreate->booleanValue) {
+      return true;
+    }
+
+    _out->printInfo("Info: Creating UI element.");
 
     {
       auto parameters = std::make_shared<Flows::Array>();
@@ -267,6 +282,7 @@ bool UiBase::start() {
       return false;
     }
 
+    setNodeData("uiElementId", result);
     setNodeData("recreate", std::make_shared<Flows::Variable>(false));
     _created = recreate->type != Flows::VariableType::tBoolean;
     _recreated = true;
