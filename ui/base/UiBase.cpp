@@ -93,6 +93,9 @@ bool UiBase::init(const Flows::PNodeInfo &info) {
     settingsIterator = info->info->structValue->find("passthrough-input");
     if (settingsIterator != info->info->structValue->end()) _passThroughInput = settingsIterator->second->booleanValue;
 
+    settingsIterator = info->info->structValue->find("roles");
+    if (settingsIterator != info->info->structValue->end()) _roles = settingsIterator->second->booleanValue;
+
     uint32_t outputs = 0;
     settingsIterator = info->info->structValue->find("outputs");
     if (settingsIterator != info->info->structValue->end()) outputs = settingsIterator->second->integerValue64;
@@ -128,15 +131,17 @@ bool UiBase::start() {
     }
 
     if (uiElementExists && recreate->type == Flows::VariableType::tBoolean && !recreate->booleanValue) {
-      auto roles = getNodeData("roles");
-      if (!roles->structValue->empty()) {
-        auto parameters = std::make_shared<Flows::Array>();
-        parameters->reserve(2);
-        parameters->emplace_back(std::make_shared<Flows::Variable>(_id));
-        parameters->emplace_back(roles);
-        auto result = invoke("registerUiNodeRoles", parameters);
-        if (result->errorStruct) {
-          _out->printWarning("Warning: Could not register roles.");
+      if (_roles) {
+        auto roles = getNodeData("roles");
+        if (!roles->structValue->empty()) {
+          auto parameters = std::make_shared<Flows::Array>();
+          parameters->reserve(2);
+          parameters->emplace_back(std::make_shared<Flows::Variable>(_id));
+          parameters->emplace_back(roles);
+          auto result = invoke("registerUiNodeRoles", parameters);
+          if (result->errorStruct) {
+            _out->printWarning("Warning: Could not register roles.");
+          }
         }
       }
 
@@ -324,7 +329,9 @@ bool UiBase::start() {
     }
 
     setNodeData("uiElementId", result);
-    if (!roles->structValue->empty()) {
+    _out->printInfo("Moin2 " + std::to_string(_roles));
+    if (_roles && !roles->structValue->empty()) {
+      _out->printInfo("Moin3 " + std::to_string(_roles));
       setNodeData("roles", roles);
       auto parameters2 = std::make_shared<Flows::Array>();
       parameters2->reserve(2);

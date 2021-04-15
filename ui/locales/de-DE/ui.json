@@ -6,7 +6,8 @@
       "label": "Beschriftung",
       "uielement": "UI-Element",
       "icon": "Icon",
-      "passthrough-input": "Eingehende Nachricht an Ausgang durchreichen"
+      "passthrough-input": "Eingehende Nachricht an Ausgang durchreichen",
+      "roles": "Ausgänge zu Rollen hinzufügen"
     }
   },
   "ui-button": {

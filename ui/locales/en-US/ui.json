@@ -6,7 +6,8 @@
       "label": "Label",
       "uielement": "UI element",
       "icon": "Icon",
-      "passthrough-input": "Passthrough incoming message to output"
+      "passthrough-input": "Passthrough incoming message to output",
+      "roles": "Add outputs to roles"
     }
   },
   "ui-button": {

@@ -29,6 +29,11 @@
         <input type="checkbox" id="node-input-passthrough-input" style="display: inline-block; width: auto; vertical-align: top;">
         <label for="node-input-passthrough-input" style="width: 65%;" data-i18n="ui/ui-common:ui-common.label.passthrough-input"></label>
     </div>
+    <div class="form-row">
+        <label style="width: 130px;">&nbsp;</label>
+        <input type="checkbox" id="node-input-roles" style="display: inline-block; width: auto; vertical-align: top;">
+        <label for="node-input-roles" style="width: 65%;" data-i18n="ui/ui-common:ui-common.label.roles"></label>
+    </div>
 </script>
 <script type="text/javascript">
     RED.nodes.registerType('ui-hvac', {
@@ -60,7 +65,8 @@
             outputLabels2: {value: []},
             outputDescriptions: {value: []},
             outputTypes: {value: []},
-            "passthrough-input": {value: false}
+            "passthrough-input": {value: false},
+            roles: {value: false}
         },
         inputs: 0,
         inputInfo: function (i) {
@@ -250,8 +256,9 @@
             var room = $("#node-input-room").val();
             var label = $("#node-input-label").val();
             var stepSize = $("#node-input-stepsize").val();
+            var roles = $("#node-input-roles").val();
 
-            if (uiElement !== node.uielement || room !== node.room || label !== node.label || stepSize != node.stepsize) {
+            if (uiElement !== node.uielement || room !== node.room || label !== node.label || stepSize != node.stepsize || roles != node.roles) {
                 node.dynamicMetadata = {"stepSize": parseFloat(stepSize)};
 
                 //Something changed
