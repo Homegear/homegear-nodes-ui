@@ -329,9 +329,7 @@ bool UiBase::start() {
     }
 
     setNodeData("uiElementId", result);
-    _out->printInfo("Moin2 " + std::to_string(_roles));
     if (_roles && !roles->structValue->empty()) {
-      _out->printInfo("Moin3 " + std::to_string(_roles));
       setNodeData("roles", roles);
       auto parameters2 = std::make_shared<Flows::Array>();
       parameters2->reserve(2);
