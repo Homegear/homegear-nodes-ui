@@ -193,6 +193,13 @@ bool UiBase::start() {
             entry->structValue->emplace("maximumScaled", std::make_shared<Flows::Variable>(_maximumValue));
           }
           if (_inputRendering && nodeInputIndex < _inputRendering->arrayValue->size()) entry->structValue->emplace("rendering", _inputRendering->arrayValue->at(nodeInputIndex));
+          auto propertiesIterator = templateIterator->second->arrayValue->at(i)->structValue->find("properties");
+          if (propertiesIterator != templateIterator->second->arrayValue->at(i)->structValue->end()) {
+            auto roleIterator = propertiesIterator->second->structValue->find("role");
+            if (roleIterator != propertiesIterator->second->structValue->end()) {
+              roles->structValue->emplace("i" + std::to_string(nodeInputIndex), roleIterator->second);
+            }
+          }
           outerArray->arrayValue->emplace_back(entry);
         }
         inputPeers->arrayValue->emplace_back(outerArray);
@@ -248,6 +255,13 @@ bool UiBase::start() {
                 entry->structValue->emplace("maximumScaled", std::make_shared<Flows::Variable>(_maximumValue));
               }
               if (_inputRendering && nodeInputIndex < _inputRendering->arrayValue->size()) entry->structValue->emplace("rendering", _inputRendering->arrayValue->at(nodeInputIndex));
+              auto propertiesIterator = templateIterator->second->arrayValue->at(i)->structValue->find("properties");
+              if (propertiesIterator != templateIterator->second->arrayValue->at(i)->structValue->end()) {
+                auto roleIterator = propertiesIterator->second->structValue->find("role");
+                if (roleIterator != propertiesIterator->second->structValue->end()) {
+                  roles->structValue->emplace("i" + std::to_string(nodeInputIndex), roleIterator->second);
+                }
+              }
               outerArray->arrayValue->emplace_back(entry);
             }
             inputPeers->arrayValue->emplace_back(outerArray);
