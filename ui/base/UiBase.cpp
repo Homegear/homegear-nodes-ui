@@ -121,14 +121,25 @@ bool UiBase::start() {
 
     bool uiElementExists = false;
 
-    if (uiElementId != 0)
-    {
+    if (uiElementId != 0) {
       auto parameters = std::make_shared<Flows::Array>();
       parameters->emplace_back(std::make_shared<Flows::Variable>(uiElementId));
       uiElementExists = invoke("uiElementExists", parameters)->booleanValue;
     }
 
     if (uiElementExists && recreate->type == Flows::VariableType::tBoolean && !recreate->booleanValue) {
+      auto roles = getNodeData("roles");
+      if (!roles->structValue->empty()) {
+        auto parameters = std::make_shared<Flows::Array>();
+        parameters->reserve(2);
+        parameters->emplace_back(std::make_shared<Flows::Variable>(_id));
+        parameters->emplace_back(roles);
+        auto result = invoke("registerUiNodeRoles", parameters);
+        if (result->errorStruct) {
+          _out->printWarning("Warning: Could not register roles.");
+        }
+      }
+
       return true;
     }
 
@@ -153,6 +164,8 @@ bool UiBase::start() {
       _out->printError("Error: Could not (re-)create UI element. An error occured trying to get the UI element's template: " + uiElementTemplate->structValue->at("faultString")->stringValue);
       return false;
     }
+
+    auto roles = std::make_shared<Flows::Variable>(Flows::VariableType::tStruct);
 
     auto typeIterator = uiElementTemplate->structValue->find("type");
     if (typeIterator == uiElementTemplate->structValue->end()) return false;
@@ -197,6 +210,13 @@ bool UiBase::start() {
           entry->structValue->emplace("peer", std::make_shared<Flows::Variable>(0x50000001));
           entry->structValue->emplace("channel", std::make_shared<Flows::Variable>(nodeOutputIndex));
           entry->structValue->emplace("name", std::make_shared<Flows::Variable>(_id));
+          auto propertiesIterator = templateIterator->second->arrayValue->at(i)->structValue->find("properties");
+          if (propertiesIterator != templateIterator->second->arrayValue->at(i)->structValue->end()) {
+            auto roleIterator = propertiesIterator->second->structValue->find("role");
+            if (roleIterator != propertiesIterator->second->structValue->end()) {
+              roles->structValue->emplace("o" + std::to_string(nodeOutputIndex), roleIterator->second);
+            }
+          }
           outerArray->arrayValue->emplace_back(entry);
         }
         outputPeers->arrayValue->emplace_back(outerArray);
@@ -245,6 +265,13 @@ bool UiBase::start() {
               entry->structValue->emplace("peer", std::make_shared<Flows::Variable>(0x50000001));
               entry->structValue->emplace("channel", std::make_shared<Flows::Variable>(nodeOutputIndex));
               entry->structValue->emplace("name", std::make_shared<Flows::Variable>(_id));
+              auto propertiesIterator = templateIterator->second->arrayValue->at(i)->structValue->find("properties");
+              if (propertiesIterator != templateIterator->second->arrayValue->at(i)->structValue->end()) {
+                auto roleIterator = propertiesIterator->second->structValue->find("role");
+                if (roleIterator != propertiesIterator->second->structValue->end()) {
+                  roles->structValue->emplace("o" + std::to_string(nodeOutputIndex), roleIterator->second);
+                }
+              }
               outerArray->arrayValue->emplace_back(entry);
             }
             outputPeers->arrayValue->emplace_back(outerArray);
@@ -283,9 +310,21 @@ bool UiBase::start() {
     }
 
     setNodeData("uiElementId", result);
+    if (!roles->structValue->empty()) {
+      setNodeData("roles", roles);
+      auto parameters2 = std::make_shared<Flows::Array>();
+      parameters2->reserve(2);
+      parameters2->emplace_back(std::make_shared<Flows::Variable>(_id));
+      parameters2->emplace_back(roles);
+      auto result2 = invoke("registerUiNodeRoles", parameters2);
+      if (result2->errorStruct) {
+        _out->printWarning("Warning: Could not register roles.");
+      }
+    }
     setNodeData("recreate", std::make_shared<Flows::Variable>(false));
     _created = recreate->type != Flows::VariableType::tBoolean;
     _recreated = true;
+
     return true;
   } catch (const std::exception &ex) {
     _out->printEx(__FILE__, __LINE__, __PRETTY_FUNCTION__, ex.what());
