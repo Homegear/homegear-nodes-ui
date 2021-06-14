@@ -64,6 +64,9 @@ class UiBase : public Flows::INode {
   double _maximumValue = 0;
   bool _passThroughInput = false;
   bool _roles = false;
+  std::string _prefix;
+  std::string _postfix;
+  int32_t _decimalPlaces = -1;
 
   void variableEvent(const std::string &source, uint64_t peerId, int32_t channel, const std::string &variable, const Flows::PVariable &value, const Flows::PVariable &metadata) override;
 

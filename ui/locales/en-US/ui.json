@@ -92,6 +92,9 @@
   },
   "ui-status": {
     "label": {
+      "prefix": "Prefix",
+      "postfix": "Postfix",
+      "decimals": "Decimal places",
       "status": "status",
       "genericStatus": "Status"
     },

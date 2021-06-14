@@ -96,6 +96,19 @@ bool UiBase::init(const Flows::PNodeInfo &info) {
     settingsIterator = info->info->structValue->find("roles");
     if (settingsIterator != info->info->structValue->end()) _roles = settingsIterator->second->booleanValue;
 
+    settingsIterator = info->info->structValue->find("prefix");
+    if (settingsIterator != info->info->structValue->end()) _prefix = settingsIterator->second->stringValue;
+
+    settingsIterator = info->info->structValue->find("postfix");
+    if (settingsIterator != info->info->structValue->end()) _postfix = settingsIterator->second->stringValue;
+
+    settingsIterator = info->info->structValue->find("decimals");
+    if (settingsIterator != info->info->structValue->end()) {
+      _decimalPlaces = Flows::Math::getNumber(settingsIterator->second->stringValue);
+      if (_decimalPlaces < 0) _decimalPlaces = -1;
+      else if (_decimalPlaces > 100) _decimalPlaces = 100;
+    }
+
     uint32_t outputs = 0;
     settingsIterator = info->info->structValue->find("outputs");
     if (settingsIterator != info->info->structValue->end()) outputs = settingsIterator->second->integerValue64;
@@ -397,16 +410,33 @@ void UiBase::input(const Flows::PNodeInfo &info, uint32_t index, const Flows::PV
   try {
     if (index >= _variableInputIndexByNodeInputIndex.size()) return;
 
+    auto value = std::make_shared<Flows::Variable>();
+    *value = *message->structValue->at("payload");
+
+    if (_decimalPlaces >= 0 && value->type == Flows::VariableType::tFloat) {
+      std::ostringstream out;
+      out.precision(_decimalPlaces);
+      out.imbue(std::locale(""));
+      out << std::fixed << value->floatValue;
+      value->stringValue = out.str();
+      value->type = Flows::VariableType::tString;
+    }
+
+    if (!_prefix.empty() || !_postfix.empty()) {
+      value->stringValue = _prefix + value->toString() + _postfix;
+      value->type = Flows::VariableType::tString;
+    }
+
     auto parameters = std::make_shared<Flows::Array>();
     parameters->reserve(5);
     parameters->emplace_back(std::make_shared<Flows::Variable>("nodeBlue"));
     parameters->emplace_back(std::make_shared<Flows::Variable>(0x50000000));
     parameters->emplace_back(std::make_shared<Flows::Variable>(index));
     parameters->emplace_back(std::make_shared<Flows::Variable>(_id));
-    parameters->emplace_back(message->structValue->at("payload"));
+    parameters->emplace_back(value);
     invoke("nodeBlueVariableEvent", parameters);
 
-    setNodeData("i" + std::to_string(index), message->structValue->at("payload"));
+    setNodeData("i" + std::to_string(index), value);
 
     if (_passThroughInput) {
       if (index >= _variableInputIndexByNodeInputIndex.size()) return;

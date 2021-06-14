@@ -38,7 +38,6 @@ class Status : public UiBase {
  public:
   Status(const std::string &path, const std::string &type, const std::atomic_bool *frontendConnected);
   ~Status() override;
- private:
 };
 
 }

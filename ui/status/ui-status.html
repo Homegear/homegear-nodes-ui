@@ -25,6 +25,18 @@
         <input style="width: 65%;" type="text" id="node-input-label" data-i18n="[placeholder]ui/ui-common:ui-common.label.label">
     </div>
     <div class="form-row">
+        <label style="width: 130px;" for="node-input-prefix"><i class="fa fa-tag"></i> <span data-i18n="ui/ui-status:ui-status.label.prefix"></span></label>
+        <input style="width: 65%;" type="text" id="node-input-prefix" data-i18n="[placeholder]ui/ui-status:ui-status.label.prefix">
+    </div>
+    <div class="form-row">
+        <label style="width: 130px;" for="node-input-postfix"><i class="fa fa-tag"></i> <span data-i18n="ui/ui-status:ui-status.label.postfix"></span></label>
+        <input style="width: 65%;" type="text" id="node-input-postfix" data-i18n="[placeholder]ui/ui-status:ui-status.label.postfix">
+    </div>
+    <div class="form-row">
+        <label style="width: 130px;" for="node-input-decimals"><i class="fa fa-arrows-h"></i> <span data-i18n="ui/ui-status:ui-status.label.decimals"></span></label>
+        <input style="width: 65%;" type="text" id="node-input-decimals" data-i18n="[placeholder]ui/ui-status:ui-status.label.decimals">
+    </div>
+    <div class="form-row">
         <label style="width: 130px;">&nbsp;</label>
         <input type="checkbox" id="node-input-passthrough-input" style="display: inline-block; width: auto; vertical-align: top;">
         <label for="node-input-passthrough-input" style="width: 65%;" data-i18n="ui/ui-common:ui-common.label.passthrough-input"></label>
@@ -45,6 +57,9 @@
             name: {value: ""},
             room: {value: "", required: true},
             label: {value: "", required: true},
+            prefix: {value: ""},
+            postfix: {value: ""},
+            decimals: {value: 0, validate: function(v) { return v === "" || ($.isNumeric(v) && this.decimals >= 0 && this.decimals < 20); }},
             inputs: {value: 0},
             outputs: {value: 0},
             inputIndexes: {value: []},
