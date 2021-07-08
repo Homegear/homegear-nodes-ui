@@ -49,7 +49,8 @@
       "lightingSwitch": "Lichtschalter",
       "lightingSwitchBrightness": "Dimmbares Licht",
       "lightingSwitchBrightnessTemp": "Dimmbares Licht mit Farbtemperatur",
-      "lightingSwitchColor": "Farbiges Licht"
+      "lightingSwitchColor": "Farbiges Licht",
+      "lightingAutomationControl": "Beleuchtungssteuerung"
     },
     "paletteHelp": "<p>Visualisiert Leuchten in Homegears UI.</p>",
     "help": "<p>Dieser Knoten visualisiert Leuchten in Homegears UI.</p>"

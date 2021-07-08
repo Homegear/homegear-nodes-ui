@@ -49,7 +49,8 @@
       "lightingSwitch": "Light switch",
       "lightingSwitchBrightness": "Dimmable light",
       "lightingSwitchBrightnessTemp": "Dimmable light with color temperature",
-      "lightingSwitchColor": "Colored light"
+      "lightingSwitchColor": "Colored light",
+      "lightingAutomationControl": "Lighting automation control"
     },
     "paletteHelp": "<p>Visualizes lights in Homegear's UI.</p>",
     "help": "<p>This node visualizes lights in Homegear's UI.</p>"
