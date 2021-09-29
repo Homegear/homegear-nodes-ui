@@ -27,20 +27,13 @@
  * files in the program, then also delete it here.
  */
 
-#ifndef HOMEGEAR_NODES_UI_UI_HEATING_HEATING_H_
-#define HOMEGEAR_NODES_UI_UI_HEATING_HEATING_H_
-
-#include "../base/UiBase.h"
+#include "Hvac.h"
 
 namespace Ui {
 
-class Heating : public UiBase {
- public:
-  Heating(const std::string &path, const std::string &type, const std::atomic_bool *frontendConnected);
-  ~Heating() override;
- private:
-};
-
+Hvac::Hvac(const std::string &path, const std::string &type, const std::atomic_bool *frontendConnected) : UiBase(path, type, frontendConnected) {
 }
 
-#endif
+Hvac::~Hvac() = default;
+
+}

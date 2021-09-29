@@ -31,7 +31,7 @@
 
 Flows::INode* MyFactory::createNode(const std::string &path, const std::string &type, const std::atomic_bool* frontendConnected)
 {
-	return new Ui::Heating(path, type, frontendConnected);
+	return new Ui::Hvac(path, type, frontendConnected);
 }
 
 Flows::NodeFactory* getFactory()

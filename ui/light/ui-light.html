@@ -1,4 +1,4 @@
-<script type="text/x-red" data-template-name="ui-socket">
+<script type="text/x-red" data-template-name="ui-light">
     <div class="form-row">
         <label style="width: 130px;" for="node-input-name"><i class="fa fa-tag"></i> <span data-i18n="ui/ui-common:ui-common.label.name"></span></label>
         <input style="width: 65%;" type="text" id="node-input-name" data-i18n="[placeholder]ui/ui-common:ui-common.label.name">
@@ -20,6 +20,10 @@
         <label style="width: 130px;" for="node-input-label"><i class="fa fa-tag"></i> <span data-i18n="ui/ui-common:ui-common.label.label"></span></label>
         <input style="width: 65%;" type="text" id="node-input-label" data-i18n="[placeholder]ui/ui-common:ui-common.label.label">
     </div>
+    <div id="node-input-stepsize-container" class="form-row hide">
+        <label style="width: 130px;" for="node-input-stepsize"><i class="fa fa-tag"></i> <span data-i18n="ui-light.label.stepsize"></span></label>
+        <input style="width: 65%;" type="text" id="node-input-stepsize" data-i18n="[placeholder]ui-light.label.stepsize">
+    </div>
     <div class="form-row">
         <label style="width: 130px;">&nbsp;</label>
         <input type="checkbox" id="node-input-passthrough-input" style="display: inline-block; width: auto; vertical-align: top;">
@@ -27,12 +31,12 @@
     </div>
 </script>
 <script type="text/javascript">
-    RED.nodes.registerType('ui-socket', {
+    RED.nodes.registerType('ui-light', {
         category: 'homegear ui',
         color: "#191b1f",
         defaults: {
             uielement: {
-                value: "Base.socketSwitch", validate: function (v) {
+                value: "", validate: function (v) {
                     return v != "";
                 }
             },
@@ -42,6 +46,8 @@
             label: {value: "", required:true},
             inputs: {value: 0},
             outputs: {value: 0},
+            stepsize: {value: 0.5, validate: function(v) { return $.isNumeric(v); }},
+            dynamicMetadata: {value: {}},
             inputIndexes: {value: []},
             inputLabels2: {value: []},
             inputDescriptions: {value: []},
@@ -76,12 +82,12 @@
                 description: description
             }
         },
-        icon: "font-awesome/fa-plug",
+        icon: "font-awesome/fa-lightbulb-o",
         paletteLabel: function () {
-            return RED._("ui/ui-socket:ui-socket.label.socket");
+            return RED._("ui/ui-light:ui-light.label.light");
         },
         label: function () {
-            return this.name || this.uiElementLabel || RED._("ui/ui-socket:ui-socket.label.socket");
+            return this.name || this.uiElementLabel || RED._("ui/ui-light:ui-light.label.light");
         },
         labelStyle: function () {
             return "red-ui-flow-node-label-white";
@@ -211,11 +217,24 @@
             var uiElementSelect = $("#node-input-uielement");
             uiElementSelect.on("change", function () {
                 updateUiElement();
+
+                var uiElement = uiElementSelect.val();
+                if (uiElement === "Base.heatingIsStateSliderMode" || uiElement === "Base.heatingIsStateSliderModeWindowHandle") {
+                    $('#node-input-stepsize-container').show();
+                }
+                else {
+                    $('#node-input-stepsize-container').hide();
+                }
             });
             //}}}
 
             //{{{ Fill ui elements - this needs to be done here and not in HTML so the label is loaded before initializing select2.
-            uiElementSelect.append($("<option />").val("Base.socketSwitch").text(RED._("ui/ui-socket:ui-socket.label.socketSwitch")));
+            uiElementSelect.append($("<option />").val("Base.lightingButton").text(RED._("ui/ui-light:ui-light.label.lightingButton")));
+            uiElementSelect.append($("<option />").val("Base.lightingSwitch").text(RED._("ui/ui-light:ui-light.label.lightingSwitch")));
+            uiElementSelect.append($("<option />").val("Base.lightingSwitchBrightness").text(RED._("ui/ui-light:ui-light.label.lightingSwitchBrightness")));
+            uiElementSelect.append($("<option />").val("Base.lightingSwitchBrightnessTemp").text(RED._("ui/ui-light:ui-light.label.lightingSwitchBrightnessTemp")));
+            uiElementSelect.append($("<option />").val("Base.lightingSwitchColor").text(RED._("ui/ui-light:ui-light.label.lightingSwitchColor")));
+            uiElementSelect.append($("<option />").val("Base.lightingAutomationControl").text(RED._("ui/ui-light:ui-light.label.lightingAutomationControl")));
             uiElementSelect.val(node.uielement);
             //}}}
 
@@ -230,8 +249,11 @@
             node.uiElementLabel = $("#node-input-uielement option:selected").text();
             var room = $("#node-input-room").val();
             var label = $("#node-input-label").val();
+            var stepSize = $("#node-input-stepsize").val();
 
-            if (uiElement !== node.uielement || room !== node.room || label !== node.label) {
+            if (uiElement !== node.uielement || room !== node.room || label !== node.label || stepSize != node.stepsize) {
+                node.dynamicMetadata = {"stepSize": parseFloat(stepSize)};
+
                 //Something changed
                 RED.comms.homegear().invoke('setNodeVariable', null, node.id, "recreate", true);
             }

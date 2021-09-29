@@ -4,14 +4,126 @@
       "name": "Name",
       "room": "Raum",
       "label": "Beschriftung",
-      "uielement": "UI-Element"
+      "uielement": "UI-Element",
+      "icon": "Icon",
+      "passthrough-input": "Eingehende Nachricht an Ausgang durchreichen",
+      "roles": "Ausgänge zu Rollen hinzufügen"
     }
+  },
+  "ui-button": {
+    "label": {
+      "switch": "Taster",
+      "genericSwitch": "Taster",
+      "onlabel": "An-Beschriftung",
+      "offlabel": "Aus-Beschriftung",
+      "on": "an",
+      "off": "aus"
+    },
+    "paletteHelp": "<p>Visualisiert einen Taster in Homegears UI.</p>",
+    "help": "<p>Dieser Knoten visualisiert einen Taster in Homegears UI.</p>"
+  },
+  "ui-door": {
+    "label": {
+      "door": "Tür",
+      "doorHandle": "Türkontakt oder -griff",
+      "doorLock": "Türschlossstatus"
+    },
+    "paletteHelp": "<p>Visualisiert Türen in Homegears UI.</p>",
+    "help": "<p>Diser Knoten visualisiert Türen in Homegears UI.</p>"
+  },
+  "ui-hvac": {
+    "label": {
+      "hvac": "Klima",
+      "stepsize": "Schrittgröße",
+      "heatingSliderMode": "Heizung",
+      "heatingSliderModeWindow": "Heizung mit Fenster",
+      "ventilationMode": "4-stufige Lüftung"
+    },
+    "paletteHelp": "<p>Visualisiert Heizungen, Klimaanlagen und Lüftungen in Homegears UI.</p>",
+    "help": "<p>Dieser Knoten visualisiert Heizungen, Klimaanlagen und Lüftungen in Homegears UI.</p>"
+  },
+  "ui-light": {
+    "label": {
+      "light": "Licht",
+      "lightingButton": "Lichttaster",
+      "lightingSwitch": "Lichtschalter",
+      "lightingSwitchBrightness": "Dimmbares Licht",
+      "lightingSwitchBrightnessTemp": "Dimmbares Licht mit Farbtemperatur",
+      "lightingSwitchColor": "Farbiges Licht",
+      "lightingAutomationControl": "Beleuchtungssteuerung"
+    },
+    "paletteHelp": "<p>Visualisiert Leuchten in Homegears UI.</p>",
+    "help": "<p>Dieser Knoten visualisiert Leuchten in Homegears UI.</p>"
+  },
+  "ui-shading": {
+    "label": {
+      "shading": "Beschattung",
+      "shadingButtonsPosition": "Rollladen",
+      "shadingButtonsPositionWindalarm": "Rollladen mit Windalarm",
+      "shadingButtonsPositionVentilationWindalarm": "Rollladen mit Lüftung und Windalarm",
+      "shadingButtonsPositionPositionSlats": "Jalousie",
+      "shadingButtonsSingleStepPositionPositionSlatsWindalarm": "Jalousie mit Windalarm",
+      "shadingAwningButtonsPosition": "Markise",
+      "shadingAwningButtonsPositionRainalarm": "Markise mit Regenalarm",
+      "shadingAwningButtonsPositionWindalarm": "Markise mit Windalarm",
+      "shadingAwningButtonsPositionWindalarmRainalarm": "Markise mit Regen- und Windalarm"
+    },
+    "paletteHelp": "<p>Visualisiert Beschattungen in Homegears UI.</p>",
+    "help": "<p>Dieser Knoten visualisiert Beschattungen in Homegears UI.</p>"
+  },
+  "ui-slider": {
+    "label": {
+      "slider": "Schieberegler",
+      "unit": "Einheit",
+      "minimumvalue": "Minimum",
+      "maximumvalue": "Maximum",
+      "stepsize": "Schrittgröße",
+      "genericSlider": "Schieberegler"
+    },
+    "paletteHelp": "<p>Visualisiert einen Zahlenwert innerhalb eines definierten Wertebereichs in Homegears UI.</p>",
+    "help": "<p>Diser Knoten visualisiert einen Zahlenwert innerhalb eines definierten Wertebereichs in Homegears UI.</p>"
   },
   "ui-socket": {
     "label": {
+      "socket": "Steckdose",
       "socketSwitch": "Steckdose"
     },
-    "paletteHelp": "<p>Abonniert Ereignisse von Variablen.</p>",
-    "help": "<p>Dieser Knoten abonniert Ereignisse von Variablen. Um zu vermeiden, dass Ereignisse zu schnell erneut auftreten, können Sie die \"Refraktärperiode\" (in ms) einstellen. Um alle Ereignisse auszugeben, setzen Sie \"Refraktärperiode\" auf <code>0</code>.<p><p>Um Rückkopplungsschleifen zu unterbinden (Variable 1 setzt Variable 2, wodurch Variable 2 Variable 1 setzt), kann die \"Verhinderung von Rückkopplungsschleifen\" aktiviert werden. Fügen Sie alle Variablen, die die Schleife verursachen, derselben Schleifenverhinderungsgruppe hinzu und legen Sie eine Gruppenrefraktärzeit fest, die lang genug ist, um alle Rückkopplungsereignisse abzufangen. Der Eingang kann verwendet werden, um die Ausgabe des aktuellen Variablenwerts zu erzwingen.</p>"
+    "paletteHelp": "<p>Visualisiert Steckdosen in Homegears UI.</p>",
+    "help": "<p>Dieser Knoten visualisiert Steckdosen in Homegears UI.</p>"
+  },
+  "ui-status": {
+    "label": {
+      "prefix": "Präfix",
+      "postfix": "Postfix",
+      "decimals": "Dezimalstellen",
+      "status": "Status",
+      "genericStatus": "Status"
+    },
+    "paletteHelp": "<p>Visualisiert einen Status (einen beliebigen Text) in Homegears UI.</p>",
+    "help": "<p>Dieser Knoten visualisiert einen Status (einen beliebigen Text) in Homegears UI.</p>"
+  },
+  "ui-switch": {
+    "label": {
+      "switch": "Schalter",
+      "genericSwitch": "Schalter",
+      "onlabel": "An-Beschriftung",
+      "offlabel": "Aus-Beschriftung",
+      "on": "an",
+      "off": "aus"
+    },
+    "paletteHelp": "<p>Visualisiert einen Schalter in Homegears UI.</p>",
+    "help": "<p>Dieser Knoten visualisiert einen Schalter in Homegears UI.</p>"
+  },
+  "ui-window": {
+    "label": {
+      "window": "Fenster",
+      "windowHandle": "Fensterkontakt oder -griff",
+      "windowButtonsUpDown": "Fenster auf/zu",
+      "windowButtonsUpDownRainalarm": "Fenster auf/zu mit Regenalarm",
+      "windowButtonsPosition": "Fensterposition",
+      "windowButtonsPositionRainalarm": "Fensterposition mit Regenalarm"
+    },
+    "paletteHelp": "<p>Visualisiert Fenster in Homegears UI.</p>",
+    "help": "<p>Dieser Knoten visualisiert Fenster in Homegears UI.</p>"
   }
 }

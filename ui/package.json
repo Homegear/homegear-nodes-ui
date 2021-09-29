@@ -10,12 +10,28 @@
   "node-blue": {
     "local": false,
     "maxThreadCounts": {
-      "ui-heating": 0,
-      "ui-socket": 0
+      "ui-button": 0,
+      "ui-door": 0,
+      "ui-hvac": 0,
+      "ui-light": 0,
+      "ui-shading": 0,
+      "ui-slider": 0,
+      "ui-socket": 0,
+      "ui-status": 0,
+      "ui-switch": 0,
+      "ui-window": 0
     },
     "nodes": {
-      "ui-heating": "ui-heating.so",
-      "ui-socket": "ui-socket.so"
+      "ui-button": "ui-button.so",
+      "ui-door": "ui-door.so",
+      "ui-hvac": "ui-hvac.so",
+      "ui-light": "ui-light.so",
+      "ui-shading": "ui-shading.so",
+      "ui-slider": "ui-slider.so",
+      "ui-socket": "ui-socket.so",
+      "ui-status": "ui-status.so",
+      "ui-switch": "ui-switch.so",
+      "ui-window": "ui-window.so"
     }
   },
   "version": "1.0.0"

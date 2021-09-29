@@ -1,4 +1,4 @@
-<script type="text/x-red" data-template-name="ui-heating">
+<script type="text/x-red" data-template-name="ui-window">
     <div class="form-row">
         <label style="width: 130px;" for="node-input-name"><i class="fa fa-tag"></i> <span data-i18n="ui/ui-common:ui-common.label.name"></span></label>
         <input style="width: 65%;" type="text" id="node-input-name" data-i18n="[placeholder]ui/ui-common:ui-common.label.name">
@@ -9,6 +9,9 @@
         </select>
     </div>
     <div class="form-row">
+        <div style="margin-left: 135px" id="node-uielement-description"></div>
+    </div>
+    <div class="form-row">
         <label style="width: 130px;" for="node-input-room"><i class="fa fa-home"></i> <span data-i18n="ui/ui-common:ui-common.label.room"></span></label>
         <select type="text" id="node-input-room" style="display: inline-block; width: 65%;">
         </select>
@@ -17,28 +20,37 @@
         <label style="width: 130px;" for="node-input-label"><i class="fa fa-tag"></i> <span data-i18n="ui/ui-common:ui-common.label.label"></span></label>
         <input style="width: 65%;" type="text" id="node-input-label" data-i18n="[placeholder]ui/ui-common:ui-common.label.label">
     </div>
+    <div class="form-row">
+        <label style="width: 130px;">&nbsp;</label>
+        <input type="checkbox" id="node-input-passthrough-input" style="display: inline-block; width: auto; vertical-align: top;">
+        <label for="node-input-passthrough-input" style="width: 65%;" data-i18n="ui/ui-common:ui-common.label.passthrough-input"></label>
+    </div>
 </script>
 <script type="text/javascript">
-    RED.nodes.registerType('ui-heating', {
+    RED.nodes.registerType('ui-window', {
         category: 'homegear ui',
         color: "#191b1f",
         defaults: {
             uielement: {
-                value: "Base.socketSwitch", validate: function (v) {
+                value: "", validate: function (v) {
                     return v != "";
                 }
             },
+            uiElementLabel: {value: ""},
             name: {value: ""},
             room: {value: "", required:true},
             label: {value: "", required:true},
-            inputs: {value: 1},
-            outputs: {value: 1},
+            inputs: {value: 0},
+            outputs: {value: 0},
+            inputIndexes: {value: []},
             inputLabels2: {value: []},
             inputDescriptions: {value: []},
             inputTypes: {value: []},
+            outputIndexes: {value: []},
             outputLabels2: {value: []},
             outputDescriptions: {value: []},
-            outputTypes: {value: []}
+            outputTypes: {value: []},
+            "passthrough-input": {value: false}
         },
         inputs: 0,
         inputInfo: function (i) {
@@ -64,11 +76,12 @@
                 description: description
             }
         },
-        icon: "font-awesome/fa-thermometer-half",
-        paletteLabel: "heating",
+        icon: "font-awesome/fa-window-maximize",
+        paletteLabel: function () {
+            return RED._("ui/ui-window:ui-window.label.window");
+        },
         label: function () {
-            if (this.name) return this.name;
-            return "heating";
+            return this.name || this.uiElementLabel || RED._("ui/ui-window:ui-window.label.window");
         },
         labelStyle: function () {
             return "red-ui-flow-node-label-white";
@@ -82,8 +95,12 @@
 
                 //{{{ Get rooms
                 RED.comms.homegear().invoke("getStories", function (message) {
+                    if (!message.hasOwnProperty("result")) return;
+
                     var stories = message.result;
                     RED.comms.homegear().invoke("getRooms", function (message) {
+                        if (!message.hasOwnProperty("result")) return;
+
                         var rooms = message.result;
                         var roomsById = [];
                         for (let i = 0; i < rooms.length; i++) {
@@ -118,52 +135,72 @@
 
                     node.inputs = 0;
                     node.outputs = 0;
+                    node.inputIndexes = [];
                     node.inputLabels2 = [];
                     node.inputDescriptions = [];
                     node.inputTypes = [];
+                    node.outputIndexes = [];
                     node.outputLabels2 = [];
                     node.outputDescriptions = [];
                     node.outputTypes = [];
 
+                    if (message.result.hasOwnProperty("description")) {
+                        $("#node-uielement-description").html(message.result.description);
+                    } else $("#node-uielement-description").html("");
+
                     if (message.result.type === "simple") {
                         if (message.result.hasOwnProperty("variableInputs")) {
-                            node.inputs = message.result.variableInputs.length;
-                            for (let input = 0; input < message.result.variableInputs.length; input++) {
-                                let variableInput = message.result.variableInputs[input];
-                                if (variableInput.properties.hasOwnProperty("label")) node.inputLabels2[input] = variableInput.properties.label;
-                                if (variableInput.properties.hasOwnProperty("description")) node.inputDescriptions[input] = variableInput.properties.description;
-                                if (variableInput.properties.hasOwnProperty("types")) node.inputTypes[input] = variableInput.properties.types;
+                            for (let i = 0; i < message.result.variableInputs.length; i++) {
+                                let variableInput = message.result.variableInputs[i];
+                                if (!variableInput.properties.hasOwnProperty("label") || variableInput.properties.label === "" || variableInput.properties.label === "-") {
+                                    continue;
+                                }
+                                node.inputIndexes[node.inputs] = [0, i];
+                                node.inputLabels2[node.inputs] = variableInput.properties.label;
+                                if (variableInput.properties.hasOwnProperty("description")) node.inputDescriptions[node.inputs] = variableInput.properties.description;
+                                if (variableInput.properties.hasOwnProperty("types")) node.inputTypes[node.inputs] = variableInput.properties.types; else node.inputTypes[node.inputs] = '';
+                                node.inputs++;
                             }
                         }
                         if (message.result.hasOwnProperty("variableOutputs")) {
-                            node.outputs = message.result.variableOutputs.length;
-                            for (let output = 0; output < message.result.variableOutputs.length; output++) {
-                                let variableOutput = message.result.variableOutputs[output];
-                                if (variableOutput.properties.hasOwnProperty("label")) node.outputLabels2[output] = variableOutput.properties.label;
-                                if (variableOutput.properties.hasOwnProperty("description")) node.outputDescriptions[output] = variableOutput.properties.description;
-                                if (variableOutput.properties.hasOwnProperty("types")) node.outputTypes[output] = variableOutput.properties.types;
+                            for (let i = 0; i < message.result.variableOutputs.length; i++) {
+                                let variableOutput = message.result.variableOutputs[node.outputs];
+                                if (!variableOutput.properties.hasOwnProperty("label") || variableOutput.properties.label === "" || variableOutput.properties.label === "-") {
+                                    continue;
+                                }
+                                node.outputIndexes[node.outputs] = [0, i];
+                                node.outputLabels2[node.outputs] = variableOutput.properties.label;
+                                if (variableOutput.properties.hasOwnProperty("description")) node.outputDescriptions[node.outputs] = variableOutput.properties.description;
+                                if (variableOutput.properties.hasOwnProperty("types")) node.outputTypes[node.outputs] = variableOutput.properties.types; else node.outputTypes[node.outputs] = '';
+                                node.outputs++;
                             }
                         }
                     } else {
-                        let input = 0;
-                        let output = 0;
                         for (let control = 0; control < message.result.controls.length; control++) {
                             if (message.result.controls[control].hasOwnProperty("variableInputs")) {
-                                node.inputs += message.result.controls[control].variableInputs.length;
-                                for (let i = 0; i < message.result.controls[control].variableInputs.length; i++, input++) {
+                                for (let i = 0; i < message.result.controls[control].variableInputs.length; i++) {
                                     let variableInput = message.result.controls[control].variableInputs[i];
-                                    if (variableInput.properties.hasOwnProperty("label")) node.inputLabels2[input] = variableInput.properties.label;
-                                    if (variableInput.properties.hasOwnProperty("description")) node.inputDescriptions[input] = variableInput.properties.description;
-                                    if (variableInput.properties.hasOwnProperty("types")) node.inputTypes[input] = variableInput.properties.types;
+                                    if (!variableInput.properties.hasOwnProperty("label") || variableInput.properties.label === "" || variableInput.properties.label === "-") {
+                                        continue;
+                                    }
+                                    node.inputIndexes[node.inputs] = [control, i];
+                                    node.inputLabels2[node.inputs] = variableInput.properties.label;
+                                    if (variableInput.properties.hasOwnProperty("description")) node.inputDescriptions[node.inputs] = variableInput.properties.description;
+                                    if (variableInput.properties.hasOwnProperty("types")) node.inputTypes[node.inputs] = variableInput.properties.types; else node.inputTypes[node.inputs] = '';
+                                    node.inputs++;
                                 }
                             }
                             if (message.result.controls[control].hasOwnProperty("variableOutputs")) {
-                                node.outputs += message.result.controls[control].variableOutputs.length;
-                                for (let i = 0; i < message.result.controls[control].variableOutputs.length; i++, output++) {
+                                for (let i = 0; i < message.result.controls[control].variableOutputs.length; i++) {
                                     let variableOutput = message.result.controls[control].variableOutputs[i];
-                                    if (variableOutput.properties.hasOwnProperty("label")) node.outputLabels2[output] = variableOutput.properties.label;
-                                    if (variableOutput.properties.hasOwnProperty("description")) node.outputDescriptions[output] = variableOutput.properties.description;
-                                    if (variableOutput.properties.hasOwnProperty("types")) node.outputTypes[output] = variableOutput.properties.types;
+                                    if (!variableOutput.properties.hasOwnProperty("label") || variableOutput.properties.label === "" || variableOutput.properties.label === "-") {
+                                        continue;
+                                    }
+                                    node.outputIndexes[node.outputs] = [control, i];
+                                    node.outputLabels2[node.outputs] = variableOutput.properties.label;
+                                    if (variableOutput.properties.hasOwnProperty("description")) node.outputDescriptions[node.outputs] = variableOutput.properties.description;
+                                    if (variableOutput.properties.hasOwnProperty("types")) node.outputTypes[node.outputs] = variableOutput.properties.types; else node.outputTypes[node.outputs] = '';
+                                    node.outputs++;
                                 }
                             }
                         }
@@ -178,11 +215,11 @@
             //}}}
 
             //{{{ Fill ui elements - this needs to be done here and not in HTML so the label is loaded before initializing select2.
-            uiElementSelect.append($("<option />").val("Base.heatingIsState").text(RED._("ui/ui-heating:ui-heating.label.heatingState")));
-            uiElementSelect.append($("<option />").val("Base.heatingIsStateSliderMode").text(RED._("ui/ui-heating:ui-heating.label.heatingSliderMode")));
-            uiElementSelect.append($("<option />").val("Base.heatingIsStateSliderModeWindow").text(RED._("ui/ui-heating:ui-heating.label.heatingSliderModeWindow")));
-            uiElementSelect.append($("<option />").val("Base.heatingIsStateSliderModeWindowContact").text(RED._("ui/ui-heating:ui-heating.label.heatingSliderModeWindowContact")));
-            uiElementSelect.append($("<option />").val("Base.heatingIsStateSliderModeWindowHandle").text(RED._("ui/ui-heating:ui-heating.label.heatingSliderModeWindowHandle")));
+            uiElementSelect.append($("<option />").val("Base.windowHandle").text(RED._("ui/ui-window:ui-window.label.windowHandle")));
+            uiElementSelect.append($("<option />").val("Base.windowButtonsPosition").text(RED._("ui/ui-window:ui-window.label.windowButtonsPosition")));
+            uiElementSelect.append($("<option />").val("Base.windowButtonsPositionRainalarm").text(RED._("ui/ui-window:ui-window.label.windowButtonsPositionRainalarm")));
+            uiElementSelect.append($("<option />").val("Base.windowButtonsUpDown").text(RED._("ui/ui-window:ui-window.label.windowButtonsUpDown")));
+            uiElementSelect.append($("<option />").val("Base.windowButtonsUpDownRainalarm").text(RED._("ui/ui-window:ui-window.label.windowButtonsUpDownRainalarm")));
             uiElementSelect.val(node.uielement);
             //}}}
 
@@ -194,6 +231,7 @@
             var node = this;
 
             var uiElement = $("#node-input-uielement").val();
+            node.uiElementLabel = $("#node-input-uielement option:selected").text();
             var room = $("#node-input-room").val();
             var label = $("#node-input-label").val();
 
