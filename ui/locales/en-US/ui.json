@@ -4,14 +4,126 @@
       "name": "Name",
       "room": "Room",
       "label": "Label",
-      "uielement": "UI element"
+      "uielement": "UI element",
+      "icon": "Icon",
+      "passthrough-input": "Passthrough incoming message to output",
+      "roles": "Add outputs to roles"
     }
+  },
+  "ui-button": {
+    "label": {
+      "button": "button",
+      "genericButton": "Button",
+      "onlabel": "On label",
+      "offlabel": "Off label",
+      "on": "on",
+      "off": "off"
+    },
+    "paletteHelp": "<p>Visualizes a button in Homegear's UI.</p>",
+    "help": "<p>This node visualizes a button in Homegear's UI.</p>"
+  },
+  "ui-door": {
+    "label": {
+      "door": "door",
+      "doorHandle": "Door contact or handle",
+      "doorLock": "Door lock status"
+    },
+    "paletteHelp": "<p>Visualizes doors in Homegear's UI.</p>",
+    "help": "<p>This node visualizes doors in Homegear's UI.</p>"
+  },
+  "ui-hvac": {
+    "label": {
+      "hvac": "hvac",
+      "stepsize": "Step size",
+      "heatingSliderMode": "Heating",
+      "heatingSliderModeWindow": "Heating with window",
+      "ventilationMode": "Ventilation with four levels"
+    },
+    "paletteHelp": "<p>Visualizes HVAC devices in Homegear's UI.</p>",
+    "help": "<p>This node visualizes HVAC devices in Homegear's UI.</p>"
+  },
+  "ui-light": {
+    "label": {
+      "light": "light",
+      "lightingButton": "Light button",
+      "lightingSwitch": "Light switch",
+      "lightingSwitchBrightness": "Dimmable light",
+      "lightingSwitchBrightnessTemp": "Dimmable light with color temperature",
+      "lightingSwitchColor": "Colored light",
+      "lightingAutomationControl": "Lighting automation control"
+    },
+    "paletteHelp": "<p>Visualizes lights in Homegear's UI.</p>",
+    "help": "<p>This node visualizes lights in Homegear's UI.</p>"
+  },
+  "ui-shading": {
+    "label": {
+      "shading": "shading",
+      "shadingButtonsPosition": "Blind",
+      "shadingButtonsPositionWindalarm": "Blind with wind alarm",
+      "shadingButtonsPositionVentilationWindalarm": "Blind with ventilation and wind alarm",
+      "shadingButtonsPositionPositionSlats": "Blind with slats",
+      "shadingButtonsSingleStepPositionPositionSlatsWindalarm": "Blind with slats and wind alarm",
+      "shadingAwningButtonsPosition": "Awning",
+      "shadingAwningButtonsPositionRainalarm": "Awning with rain alarm",
+      "shadingAwningButtonsPositionWindalarm": "Awning with wind alarm",
+      "shadingAwningButtonsPositionWindalarmRainalarm": "Awning with rain and wind alarm"
+    },
+    "paletteHelp": "<p>Visualizes blinds and awnings in Homegear's UI.</p>",
+    "help": "<p>This node visualizes blinds and awnings in Homegear's UI.</p>"
+  },
+  "ui-slider": {
+    "label": {
+      "slider": "slider",
+      "unit": "Unit",
+      "minimumvalue": "Minimum",
+      "maximumvalue": "Maximum",
+      "stepsize": "Step size",
+      "genericSlider": "Slider"
+    },
+    "paletteHelp": "<p>Visualizes a ranged numeric value in Homegear's UI.</p>",
+    "help": "<p>This node visualizes a ranged numeric value in Homegear's UI.</p>"
   },
   "ui-socket": {
     "label": {
+      "socket": "socket",
       "socketSwitch": "Socket"
     },
-    "paletteHelp": "<p>Subscribes to variable events.</p>",
-    "help": "<p>This node subscribes to variable events. To avoid events from reoccuring too fast, you can set \"Refractory period\" (in ms). To output all events, set \"Refractory period\" to <code>0</code>.<p><p>To inhibit feedback loops (variable 1 sets variable 2 which causes variable 2 to set variable 1) you can enable the feedback loop prevention. Add all variables causing the loop to the same loop prevention group and set a group refractory period long enough to catch all feedback events. The input can be used to force the output of the current variable value.</p>"
+    "paletteHelp": "<p>Visualizes sockets in Homegear's UI.</p>",
+    "help": "<p>This node visualizes sockets in Homegear's UI.</p>"
+  },
+  "ui-status": {
+    "label": {
+      "prefix": "Prefix",
+      "postfix": "Postfix",
+      "decimals": "Decimal places",
+      "status": "status",
+      "genericStatus": "Status"
+    },
+    "paletteHelp": "<p>Visualizes a status (an arbitrary text) in Homegear's UI.</p>",
+    "help": "<p>This node visualizes a status (an arbitrary text) in Homegear's UI.</p>"
+  },
+  "ui-switch": {
+    "label": {
+      "switch": "switch",
+      "genericSwitch": "Switch",
+      "onlabel": "On label",
+      "offlabel": "Off label",
+      "on": "on",
+      "off": "off"
+    },
+    "paletteHelp": "<p>Visualizes a switch in Homegear's UI.</p>",
+    "help": "<p>This node visualizes a switch in Homegear's UI.</p>"
+  },
+  "ui-window": {
+    "label": {
+      "window": "window",
+      "windowHandle": "Window contact or handle",
+      "windowButtonsUpDown": "Open/close window",
+      "windowButtonsUpDownRainalarm": "Open/close window with rain alarm",
+      "windowButtonsPosition": "Set window position",
+      "windowButtonsPositionRainalarm": "Set window position with rain alarm"
+    },
+    "paletteHelp": "<p>Visualizes windows in Homegear's UI.</p>",
+    "help": "<p>This node visualizes windows in Homegear's UI.</p>"
   }
 }

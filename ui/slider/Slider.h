@@ -27,18 +27,20 @@
  * files in the program, then also delete it here.
  */
 
-#ifndef HOMEGEAR_NODES_UI_UI_HEATING_FACTORY_H_
-#define HOMEGEAR_NODES_UI_UI_HEATING_FACTORY_H_
+#ifndef HOMEGEAR_NODES_UI_UI_SLIDER_SLIDER_H_
+#define HOMEGEAR_NODES_UI_UI_SLIDER_SLIDER_H_
 
-#include <homegear-node/NodeFactory.h>
-#include "Heating.h"
+#include "../base/UiBase.h"
 
-class MyFactory : Flows::NodeFactory
-{
-public:
-	Flows::INode* createNode(const std::string &path, const std::string &type, const std::atomic_bool* frontendConnected) override;
+namespace Ui {
+
+class Slider : public UiBase {
+ public:
+  Slider(const std::string &path, const std::string &type, const std::atomic_bool *frontendConnected);
+  ~Slider() override;
+ private:
 };
 
-extern "C" Flows::NodeFactory* getFactory();
+}
 
 #endif

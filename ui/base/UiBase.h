@@ -32,6 +32,8 @@
 
 #include <homegear-node/INode.h>
 
+#include <unordered_map>
+
 namespace Ui {
 
 class UiBase : public Flows::INode {
@@ -43,10 +45,28 @@ class UiBase : public Flows::INode {
   bool start() override;
 
   void setNodeVariable(const std::string &variable, const Flows::PVariable &value) override;
- private:
+ protected:
+  bool _created = false;
+  bool _recreated = false;
+  std::vector<std::pair<uint32_t, uint32_t>> _variableInputIndexByNodeInputIndex;
+  std::unordered_map<uint32_t, std::unordered_map<uint32_t, uint32_t>> _nodeInputIndexByVariableInputIndex;
+  std::vector<std::pair<uint32_t, uint32_t>> _variableOutputIndexByNodeOutputIndex;
+  std::unordered_map<uint32_t, std::unordered_map<uint32_t, uint32_t>> _nodeOutputIndexByVariableOutputIndex;
+  Flows::PVariable _inputRendering;
+  Flows::PVariable _dynamicMetadata;
   std::string _uiElement;
   uint64_t _room = 0;
+  std::string _unit;
+  std::string _icon;
   std::string _label;
+  bool _rangeValuesSet = false;
+  double _minimumValue = 0;
+  double _maximumValue = 0;
+  bool _passThroughInput = false;
+  bool _roles = false;
+  std::string _prefix;
+  std::string _postfix;
+  int32_t _decimalPlaces = -1;
 
   void variableEvent(const std::string &source, uint64_t peerId, int32_t channel, const std::string &variable, const Flows::PVariable &value, const Flows::PVariable &metadata) override;
 

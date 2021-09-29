@@ -27,13 +27,18 @@
  * files in the program, then also delete it here.
  */
 
-#include "Heating.h"
+#ifndef HOMEGEAR_NODES_UI_UI_HVAC_FACTORY_H_
+#define HOMEGEAR_NODES_UI_UI_HVAC_FACTORY_H_
 
-namespace Ui {
+#include <homegear-node/NodeFactory.h>
+#include "Hvac.h"
 
-Heating::Heating(const std::string &path, const std::string &type, const std::atomic_bool *frontendConnected) : UiBase(path, type, frontendConnected) {
-}
+class MyFactory : Flows::NodeFactory
+{
+public:
+	Flows::INode* createNode(const std::string &path, const std::string &type, const std::atomic_bool* frontendConnected) override;
+};
 
-Heating::~Heating() = default;
+extern "C" Flows::NodeFactory* getFactory();
 
-}
+#endif
