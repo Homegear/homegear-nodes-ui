@@ -37,6 +37,7 @@
       "stepsize": "Step size",
       "heatingSliderMode": "Heating",
       "heatingSliderModeWindow": "Heating with window",
+      "ventilationMode": "Ventilation with three levels",
       "ventilationMode": "Ventilation with four levels"
     },
     "paletteHelp": "<p>Visualizes HVAC devices in Homegear's UI.</p>",
