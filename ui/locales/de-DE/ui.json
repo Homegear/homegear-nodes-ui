@@ -37,6 +37,7 @@
       "stepsize": "Schrittgröße",
       "heatingSliderMode": "Heizung",
       "heatingSliderModeWindow": "Heizung mit Fenster",
+      "ventilationMode3": "3-stufige Lüftung",
       "ventilationMode": "4-stufige Lüftung"
     },
     "paletteHelp": "<p>Visualisiert Heizungen, Klimaanlagen und Lüftungen in Homegears UI.</p>",
